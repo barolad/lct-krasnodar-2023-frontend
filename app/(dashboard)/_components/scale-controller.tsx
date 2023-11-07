@@ -1,8 +1,8 @@
 "use client";
 
-import { useMap } from "react-leaflet";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus } from "lucide-react";
+import { useMap } from "react-leaflet";
 
 const ScaleController = () => {
   const map = useMap();

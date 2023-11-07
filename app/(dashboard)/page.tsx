@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
+import ScaleController from "@/app/(dashboard)/_components/scale-controller";
 
 const HomePage = () => {
   const Map = useMemo(
