@@ -1,6 +1,5 @@
 import { divIcon } from "leaflet";
 import { Marker, MarkerProps } from "react-leaflet";
-import { UserCircle2, UserCircle2Icon } from "lucide-react";
 
 export const StartMarker = (props: MarkerProps) => {
   return (

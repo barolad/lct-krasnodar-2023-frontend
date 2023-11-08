@@ -28,12 +28,12 @@ const AsideNav = () => {
               </Button>
             </PopoverTrigger>
             <PopoverContent
-              className="w-80 space-y-4 m-4 bg-secondary"
+              className="m-4 w-80 space-y-4 bg-secondary"
               side="right"
             >
               <div className="">
                 <p className="font-medium">Иван Иванов</p>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-sm text-muted-foreground">
                   Региональный менеджер
                 </p>
               </div>
