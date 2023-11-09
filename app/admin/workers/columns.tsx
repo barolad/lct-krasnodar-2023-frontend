@@ -5,19 +5,15 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import WorkerDialog from "@/app/admin/workers/_components/worker-dialog";
+import { UserShortWCaseRead } from "@/shared/api/api.generated";
+import { Badge } from "@/components/ui/badge";
 
-export interface Workers {
-  id: string;
-  name: string;
-  surname: string;
-  lastname: string;
-  location: string;
-  locationCoordinates: number[];
-  grade: string;
-  email: string;
-}
-
-export const columns: ColumnDef<Workers>[] = [
+export const columns: ColumnDef<UserShortWCaseRead>[] = [
+  {
+    accessorKey: "case",
+    header: "Статус",
+    cell: ({ row }) => <Badge variant="outline">{row.getValue("case")}</Badge>,
+  },
   {
     accessorKey: "surname",
     header: "Фамилия",
@@ -33,6 +29,7 @@ export const columns: ColumnDef<Workers>[] = [
       return (
         <Button
           variant="ghost"
+          className="-ml-4 h-8"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Офис
@@ -47,6 +44,7 @@ export const columns: ColumnDef<Workers>[] = [
       return (
         <Button
           variant="ghost"
+          className="-ml-4 h-8"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Уровень

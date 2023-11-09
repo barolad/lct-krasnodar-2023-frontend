@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
+import ClientProviders from "@/components/providers/client-providers";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -18,14 +20,17 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ru" suppressHydrationWarning>
       <head />
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-        )}
-      >
-        {children}
-      </body>
+      <ClientProviders>
+        <body
+          className={cn(
+            "min-h-screen bg-background font-sans antialiased",
+            fontSans.variable,
+          )}
+        >
+          {children}
+          <Toaster />
+        </body>
+      </ClientProviders>
     </html>
   );
 };

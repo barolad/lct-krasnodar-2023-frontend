@@ -1,15 +1,22 @@
 "use client";
 
-import { FieldValues } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { YandexGeocoderResponse } from "@/types";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LatLngExpression } from "leaflet";
+import { FormControl } from "@/components/ui/form";
 
-const ChooseOffice = ({ field }: { field: FieldValues }) => {
+const ChooseOffice = ({
+  setValue,
+}: {
+  setValue: (value: {
+    location: string;
+    locationCoordinates: [number, number];
+  }) => void;
+}) => {
   const Map = dynamic(
     () => import("@/app/admin/workers/_components/worker-map"),
     {
@@ -22,21 +29,26 @@ const ChooseOffice = ({ field }: { field: FieldValues }) => {
     null,
   );
 
-  const debounced = useDebouncedCallback(async (inputValue: string) => {
-    const response = await fetch(
-      `https://geocode-maps.yandex.ru/1.x/?apikey=228d6b68-f2a4-46da-a830-c4fc1b8ad721&geocode=${inputValue}&format=json`,
-    );
-    setAddresses((await response.json()) as YandexGeocoderResponse);
-    field.onChange({
+  useEffect(() => {
+    setValue({
       location:
         addresses?.response.GeoObjectCollection.featureMember[0].GeoObject
-          .metaDataProperty.GeocoderMetaData.AddressDetails.Country.AddressLine,
+          .metaDataProperty.GeocoderMetaData.AddressDetails.Country
+          .AddressLine || "",
+      // @ts-ignore
       locationCoordinates:
         addresses?.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos
           .split(" ")
           .map((num) => parseFloat(num))
           .reverse(),
     });
+  }, [addresses]);
+
+  const debounced = useDebouncedCallback(async (inputValue: string) => {
+    const response = await fetch(
+      `https://geocode-maps.yandex.ru/1.x/?apikey=228d6b68-f2a4-46da-a830-c4fc1b8ad721&geocode=${inputValue}&format=json`,
+    );
+    setAddresses((await response.json()) as YandexGeocoderResponse);
   }, 1500);
 
   const onChangeInputHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +57,9 @@ const ChooseOffice = ({ field }: { field: FieldValues }) => {
 
   return (
     <div className="space-y-2">
-      <Input onChange={(event) => onChangeInputHandler(event)} />
+      <FormControl>
+        <Input onChange={(event) => onChangeInputHandler(event)} />
+      </FormControl>
       {addresses && (
         <Map
           coordinates={

@@ -21,28 +21,50 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ChooseOffice from "@/app/admin/workers/_components/choose-office";
-import { UserShortWCaseRead } from "@/shared/api/api.generated";
 import { workerFormSchema } from "@/app/admin/workers/_components/worker-form-schema";
+import { useMutation } from "@tanstack/react-query";
+import { Grade, postUserNew } from "@/shared/api/api.generated";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { startTransition } from "react";
 
-const WorkerEditForm = (worker: UserShortWCaseRead) => {
+const WorkerCreateForm = () => {
+  const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof workerFormSchema>>({
     resolver: zodResolver(workerFormSchema),
     defaultValues: {
-      name: worker.name,
-      surname: worker.surname,
-      lastname: worker.lastname,
-      grade:
-        worker.grade === "Сеньор" ? "0" : worker.grade === "Мидл" ? "1" : "0",
-      email: worker.email,
+      name: "",
+      surname: "",
+      lastname: "",
+      email: "",
       password: "",
-      location: {
-        location: "",
-        locationCoordinates: [0, 0],
-      },
+    },
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (values: z.infer<typeof workerFormSchema>) =>
+      postUserNew({
+        email: values.email,
+        grade: Number(values.grade) as Grade,
+        lastname: values.lastname,
+        location: values.location.location,
+        locationCoordinates: values.location.locationCoordinates,
+        name: values.name,
+        password: values.password,
+        role: 2,
+        surname: values.surname,
+      }),
+    onSuccess: () => {
+      toast({ title: "Пользователь создан" });
+      startTransition(() => {
+        router.refresh();
+      });
     },
   });
   function onSubmit(values: z.infer<typeof workerFormSchema>) {
-    console.log(values);
+    mutate(values);
   }
   return (
     <Form {...form}>
@@ -147,20 +169,18 @@ const WorkerEditForm = (worker: UserShortWCaseRead) => {
             return (
               <FormItem>
                 <FormLabel>Офис</FormLabel>
-                <FormControl>
-                  <ChooseOffice setValue={setLocationValue} />
-                </FormControl>
+                <ChooseOffice setValue={setLocationValue} />
                 <FormMessage />
               </FormItem>
             );
           }}
         />
-        <Button type="submit" className="w-full">
-          Изменить
+        <Button type="submit" className="w-full" isLoading={isPending}>
+          Создать
         </Button>
       </form>
     </Form>
   );
 };
 
-export default WorkerEditForm;
+export default WorkerCreateForm;

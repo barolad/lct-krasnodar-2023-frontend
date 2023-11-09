@@ -1,9 +1,9 @@
 import {
+  DialogClose,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Workers } from "@/app/admin/workers/columns";
 import { Button } from "@/components/ui/button";
 import { PencilLine, UserCircle2 } from "lucide-react";
 import { LatLngExpression } from "leaflet";
@@ -11,6 +11,8 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import WorkerEditForm from "@/app/admin/workers/_components/worker-edit-form";
+import { UserShortWCaseRead } from "@/shared/api/api.generated";
+import DeleteWorkerButton from "@/app/admin/workers/_components/delete-worker-button";
 
 const CustomRow = ({ title, value }: { title: string; value: string }) => {
   return (
@@ -21,7 +23,7 @@ const CustomRow = ({ title, value }: { title: string; value: string }) => {
   );
 };
 
-const WorkerDialog = (worker: Workers) => {
+const WorkerDialog = (worker: UserShortWCaseRead) => {
   const [editing, setEditing] = useState<boolean>(false);
   const Map = useMemo(
     () =>
@@ -51,7 +53,7 @@ const WorkerDialog = (worker: Workers) => {
               <CustomRow title="Фамилия" value={worker.surname} />
               <CustomRow title="Имя" value={worker.name} />
               <CustomRow title="Отчество" value={worker.lastname} />
-              <CustomRow title="Уровень" value={worker.grade} />
+              <CustomRow title="Уровень" value={worker.grade || ""} />
             </div>
           </div>
           <div className="space-y-2">
@@ -66,6 +68,10 @@ const WorkerDialog = (worker: Workers) => {
                 onClick={() => setEditing(true)}
               />
             </Button>
+
+            <DialogClose>
+              <DeleteWorkerButton id={worker.id} />
+            </DialogClose>
           </DialogFooter>
         </>
       )}

@@ -85,7 +85,7 @@ export const customInstance = async <T>(
     method: "get" | "post" | "put" | "delete" | "patch";
     params?: Record<string, any>;
     headers?: Record<string, any>;
-    data?: BodyType<unknown> | FormData;
+    data?: any;
     responseType?: string;
   },
   options?: RequestInit,

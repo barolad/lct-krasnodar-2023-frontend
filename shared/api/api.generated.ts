@@ -18,6 +18,11 @@ export const YesNo = {
   NUMBER_1: 1,
 } as const;
 
+export interface WorkerCasePatchDto {
+  case: string;
+  id: string;
+}
+
 export type WhenConnected = (typeof WhenConnected)[keyof typeof WhenConnected];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -26,9 +31,27 @@ export const WhenConnected = {
   NUMBER_1: 1,
 } as const;
 
-export interface UserShortRead {
+export interface UserWithTokenRead {
+  token: string;
+  user: UserRead;
+}
+
+export interface UserShortWCaseRead {
+  case: string;
+  email: string;
   grade?: string | null;
-  id?: string;
+  id: string;
+  lastname: string;
+  location?: string | null;
+  locationCoordinates?: number[] | null;
+  name: string;
+  surname: string;
+}
+
+export interface UserShortRead {
+  email: string;
+  grade?: string | null;
+  id: string;
   lastname: string;
   location?: string | null;
   locationCoordinates?: number[] | null;
@@ -44,9 +67,17 @@ export interface UserRead {
   surname: string;
 }
 
-export interface UserWithTokenRead {
-  token: string;
-  user: UserRead;
+export interface UserPatchDto {
+  email?: string | null;
+  grade?: Grade;
+  lastname?: string | null;
+  location?: string | null;
+  locationCoordinates?: number[] | null;
+  name?: string | null;
+  password?: string | null;
+  role?: Role;
+  surname?: string | null;
+  userId: string;
 }
 
 export interface UserLoginDto {
@@ -103,7 +134,15 @@ export const Role = {
   NUMBER_2: 2,
 } as const;
 
-export interface PartnerInfoPatchDto {
+export interface Response {
+  geoObjectCollection?: GeoObjectCollection;
+}
+
+export interface Point {
+  pos?: string | null;
+}
+
+export interface PartnerStatsPatchDto {
   areCardsAndMaterialsDelivered?: YesNo;
   daysSinceLastCardIssue?: number | null;
   id?: number;
@@ -112,9 +151,14 @@ export interface PartnerInfoPatchDto {
   whenPointConnected?: WhenConnected;
 }
 
+export interface PartnerInfoPatchDto {
+  address?: string | null;
+  id?: number;
+  locationCoordinates?: number[] | null;
+}
+
 export interface PartnerInfoCreationDto {
   address: string;
-  locationCoordinates: number[];
 }
 
 export interface PartnerInfo {
@@ -128,6 +172,14 @@ export interface PartnerInfo {
   whenPointConnected?: WhenConnected;
 }
 
+export interface PartnerIdDto {
+  id?: number;
+}
+
+export interface MetaDataProperty {
+  geocoderResponseMetaData?: GeocoderResponseMetaData;
+}
+
 export type Grade = (typeof Grade)[keyof typeof Grade];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -137,21 +189,39 @@ export const Grade = {
   NUMBER_2: 2,
 } as const;
 
-export interface UserPatchDto {
-  email?: string | null;
-  grade?: Grade;
-  lastname?: string | null;
-  location?: string | null;
-  locationCoordinates?: number[] | null;
-  name?: string | null;
-  password?: string | null;
-  role?: Role;
-  surname?: string | null;
-  userId: string;
+export interface GeocoderResponseMetaData {
+  found?: string | null;
+  request?: string | null;
+  results?: string | null;
+}
+
+export interface GeocodeResponse {
+  response?: Response;
 }
 
 export interface GeocodeRequest {
   address?: string | null;
+}
+
+export interface GeoObjectCollection {
+  featureMember?: FeatureMember[] | null;
+  metaDataProperty?: MetaDataProperty;
+}
+
+export interface GeoObject {
+  boundedBy?: BoundedBy;
+  description?: string | null;
+  name?: string | null;
+  point?: Point;
+}
+
+export interface FeatureMember {
+  geoObject?: GeoObject;
+}
+
+export interface Envelope {
+  lowerCorner?: string | null;
+  upperCorner?: string | null;
 }
 
 export interface Endpnt {
@@ -164,6 +234,10 @@ export interface ConstantTaskSize {
   id: number;
   name: string;
   value: string;
+}
+
+export interface BoundedBy {
+  envelope?: Envelope;
 }
 
 // eslint-disable-next-line
@@ -239,9 +313,24 @@ export const geocoder = (
   geocodeRequest: BodyType<GeocodeRequest>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<void>(
+  return customInstance<GeocodeResponse>(
     {
       url: `/Maps/Geocoder`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: geocodeRequest,
+    },
+    options,
+  );
+};
+
+export const geosuggest = (
+  geocodeRequest: BodyType<GeocodeRequest>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<GeocodeResponse>(
+    {
+      url: `/Maps/Geosuggest`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: geocodeRequest,
@@ -265,15 +354,6 @@ export const createNewPartner = (
   );
 };
 
-export const getAllPartners = (
-  options?: SecondParameter<typeof customInstance>,
-) => {
-  return customInstance<PartnerInfo>(
-    { url: `/Partner/GetAll`, method: "get" },
-    options,
-  );
-};
-
 export const patchPartner = (
   partnerInfoPatchDto: BodyType<PartnerInfoPatchDto>,
   options?: SecondParameter<typeof customInstance>,
@@ -284,6 +364,99 @@ export const patchPartner = (
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerInfoPatchDto,
+    },
+    options,
+  );
+};
+
+export const getAllPartners = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PartnerInfo>(
+    { url: `/Partner/GetAll`, method: "get" },
+    options,
+  );
+};
+
+export const getPartner = (
+  partnerIdDto: BodyType<PartnerIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PartnerInfo>(
+    {
+      url: `/Partner/Get`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: partnerIdDto,
+    },
+    options,
+  );
+};
+
+export const deletePartner = (
+  partnerIdDto: BodyType<PartnerIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PartnerInfo>(
+    {
+      url: `/Partner/Delete`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: partnerIdDto,
+    },
+    options,
+  );
+};
+
+export const patchPartnerStatistics = (
+  partnerStatsPatchDto: BodyType<PartnerStatsPatchDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    {
+      url: `/Partner/Stats/Patch`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: partnerStatsPatchDto,
+    },
+    options,
+  );
+};
+
+export const getAllPartnersStatistics = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PartnerInfo>(
+    { url: `/Partner/Stats/Get`, method: "get" },
+    options,
+  );
+};
+
+export const getPartnerStatistics = (
+  partnerIdDto: BodyType<PartnerIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PartnerInfo>(
+    {
+      url: `/Partner/Stats/Get`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: partnerIdDto,
+    },
+    options,
+  );
+};
+
+export const deletePartnerStatistics = (
+  partnerIdDto: BodyType<PartnerIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PartnerInfo>(
+    {
+      url: `/Partner/Stats/Delete`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: partnerIdDto,
     },
     options,
   );
@@ -302,13 +475,13 @@ export const getStatus = (options?: SecondParameter<typeof customInstance>) => {
   return customInstance<void>({ url: `/Status`, method: "get" }, options);
 };
 
-export const postUserNewAdmin = (
-  userCreationDto: UserCreationDto[],
+export const postUserNew = (
+  userCreationDto: BodyType<UserCreationDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<void>(
+  return customInstance<User>(
     {
-      url: `/User/NewAdmin`,
+      url: `/User/New`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: userCreationDto,
@@ -321,26 +494,19 @@ export const getAllUsers = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<UserShortRead[]>(
-    { url: `/User/GetShortAdmin`, method: "get" },
+    { url: `/User/GetShort`, method: "get" },
     options,
   );
 };
 
-export const createNewManagerAsAdministratorOrNewWorkerAsManagerOrAdministrator =
-  (
-    userCreationDto: UserCreationDto[],
-    options?: SecondParameter<typeof customInstance>,
-  ) => {
-    return customInstance<User[]>(
-      {
-        url: `/User/New`,
-        method: "post",
-        headers: { "Content-Type": "application/json-patch+json" },
-        data: userCreationDto,
-      },
-      options,
-    );
-  };
+export const getWorkersWithCases = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<UserShortWCaseRead[]>(
+    { url: `/User/Get`, method: "get" },
+    options,
+  );
+};
 
 export const patchUser = (
   userPatchDto: BodyType<UserPatchDto>,
@@ -357,30 +523,35 @@ export const patchUser = (
   );
 };
 
-export const getAllUsersAsAdministratorOrManagerOrWorkersAsManager = (
+export const patchWorkerCase = (
+  workerCasePatchDto: BodyType<WorkerCasePatchDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<UserShortRead[]>(
-    { url: `/User/GetShort`, method: "get" },
+  return customInstance<string>(
+    {
+      url: `/User/PatchCase`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: workerCasePatchDto,
+    },
     options,
   );
 };
 
-export const deleteWorkerAsManagerOrAdministratorOrDeleteManagerAsAdministrator =
-  (
-    userIdDto: UserIdDto[],
-    options?: SecondParameter<typeof customInstance>,
-  ) => {
-    return customInstance<string>(
-      {
-        url: `/User/Delete`,
-        method: "delete",
-        headers: { "Content-Type": "application/json-patch+json" },
-        data: userIdDto,
-      },
-      options,
-    );
-  };
+export const deleteWorker = (
+  userIdDto: BodyType<UserIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<string>(
+    {
+      url: `/User/Delete`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: userIdDto,
+    },
+    options,
+  );
+};
 
 export const solveVehicleRoutingProblem = (
   options?: SecondParameter<typeof customInstance>,
@@ -410,14 +581,35 @@ export type GetContstantTasksGetConstantTasksResult = NonNullable<
   Awaited<ReturnType<typeof getContstantTasksGetConstantTasks>>
 >;
 export type GeocoderResult = NonNullable<Awaited<ReturnType<typeof geocoder>>>;
+export type GeosuggestResult = NonNullable<
+  Awaited<ReturnType<typeof geosuggest>>
+>;
 export type CreateNewPartnerResult = NonNullable<
   Awaited<ReturnType<typeof createNewPartner>>
+>;
+export type PatchPartnerResult = NonNullable<
+  Awaited<ReturnType<typeof patchPartner>>
 >;
 export type GetAllPartnersResult = NonNullable<
   Awaited<ReturnType<typeof getAllPartners>>
 >;
-export type PatchPartnerResult = NonNullable<
-  Awaited<ReturnType<typeof patchPartner>>
+export type GetPartnerResult = NonNullable<
+  Awaited<ReturnType<typeof getPartner>>
+>;
+export type DeletePartnerResult = NonNullable<
+  Awaited<ReturnType<typeof deletePartner>>
+>;
+export type PatchPartnerStatisticsResult = NonNullable<
+  Awaited<ReturnType<typeof patchPartnerStatistics>>
+>;
+export type GetAllPartnersStatisticsResult = NonNullable<
+  Awaited<ReturnType<typeof getAllPartnersStatistics>>
+>;
+export type GetPartnerStatisticsResult = NonNullable<
+  Awaited<ReturnType<typeof getPartnerStatistics>>
+>;
+export type DeletePartnerStatisticsResult = NonNullable<
+  Awaited<ReturnType<typeof deletePartnerStatistics>>
 >;
 export type GetTodaySRoutesResult = NonNullable<
   Awaited<ReturnType<typeof getTodaySRoutes>>
@@ -425,37 +617,24 @@ export type GetTodaySRoutesResult = NonNullable<
 export type GetStatusResult = NonNullable<
   Awaited<ReturnType<typeof getStatus>>
 >;
-export type PostUserNewAdminResult = NonNullable<
-  Awaited<ReturnType<typeof postUserNewAdmin>>
+export type PostUserNewResult = NonNullable<
+  Awaited<ReturnType<typeof postUserNew>>
 >;
 export type GetAllUsersResult = NonNullable<
   Awaited<ReturnType<typeof getAllUsers>>
 >;
-export type CreateNewManagerAsAdministratorOrNewWorkerAsManagerOrAdministratorResult =
-  NonNullable<
-    Awaited<
-      ReturnType<
-        typeof createNewManagerAsAdministratorOrNewWorkerAsManagerOrAdministrator
-      >
-    >
-  >;
+export type GetWorkersWithCasesResult = NonNullable<
+  Awaited<ReturnType<typeof getWorkersWithCases>>
+>;
 export type PatchUserResult = NonNullable<
   Awaited<ReturnType<typeof patchUser>>
 >;
-export type GetAllUsersAsAdministratorOrManagerOrWorkersAsManagerResult =
-  NonNullable<
-    Awaited<
-      ReturnType<typeof getAllUsersAsAdministratorOrManagerOrWorkersAsManager>
-    >
-  >;
-export type DeleteWorkerAsManagerOrAdministratorOrDeleteManagerAsAdministratorResult =
-  NonNullable<
-    Awaited<
-      ReturnType<
-        typeof deleteWorkerAsManagerOrAdministratorOrDeleteManagerAsAdministrator
-      >
-    >
-  >;
+export type PatchWorkerCaseResult = NonNullable<
+  Awaited<ReturnType<typeof patchWorkerCase>>
+>;
+export type DeleteWorkerResult = NonNullable<
+  Awaited<ReturnType<typeof deleteWorker>>
+>;
 export type SolveVehicleRoutingProblemResult = NonNullable<
   Awaited<ReturnType<typeof solveVehicleRoutingProblem>>
 >;

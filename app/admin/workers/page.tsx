@@ -1,22 +1,17 @@
 import { DashboardShell } from "@/app/admin/_components/dashboard-shell";
 import { DashboardHeader } from "@/app/admin/_components/dashboard-header";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/app/admin/workers/data-table";
 import { columns } from "@/app/admin/workers/columns";
-import { Plus } from "lucide-react";
+import { getWorkersWithCases } from "@/shared/api/api.generated";
+import WorkerCreateButton from "@/app/admin/workers/_components/worker-create-button";
 
 const CouriersPage = async () => {
-  const data = await fetch("http://87.242.88.146:8080/Api/User/GetShortAdmin", {
-    cache: "no-cache",
-  }).then((response) => response.json());
+  const data = await getWorkersWithCases({ cache: "no-cache" });
   console.log(data);
   return (
     <DashboardShell>
       <DashboardHeader heading="Сотрудники">
-        <Button>
-          <Plus className="h-4 w-4 md:mr-2" />{" "}
-          <span className="hidden md:block">Добавить сотрудника</span>
-        </Button>
+        <WorkerCreateButton />
       </DashboardHeader>
       <div className="px-2">
         {/*<div className="divide-y divide-border rounded-md border">*/}
