@@ -10,30 +10,9 @@ export type CheckIfEmailAlreadyExistsParams = {
   email?: string;
 };
 
-export type YesNo = (typeof YesNo)[keyof typeof YesNo];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const YesNo = {
-  NUMBER_0: 0,
-  NUMBER_1: 1,
-} as const;
-
 export interface WorkerCasePatchDto {
   case: string;
   id: string;
-}
-
-export type WhenConnected = (typeof WhenConnected)[keyof typeof WhenConnected];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const WhenConnected = {
-  NUMBER_0: 0,
-  NUMBER_1: 1,
-} as const;
-
-export interface UserWithTokenRead {
-  token: string;
-  user: UserRead;
 }
 
 export interface UserShortWCaseRead {
@@ -67,17 +46,9 @@ export interface UserRead {
   surname: string;
 }
 
-export interface UserPatchDto {
-  email?: string | null;
-  grade?: Grade;
-  lastname?: string | null;
-  location?: string | null;
-  locationCoordinates?: number[] | null;
-  name?: string | null;
-  password?: string | null;
-  role?: Role;
-  surname?: string | null;
-  userId: string;
+export interface UserWithTokenRead {
+  token: string;
+  user: UserRead;
 }
 
 export interface UserLoginDto {
@@ -114,6 +85,25 @@ export interface User {
   surname: string;
 }
 
+export interface TargetDataset {
+  areCardsAndMaterialsDelivered?: string | null;
+  daysSinceLastCardIssue?: number;
+  numberOfApprovedApplications?: number;
+  numberOfGivenCards?: number;
+  whenPointConnected?: string | null;
+}
+
+export type Target = (typeof Target)[keyof typeof Target];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const Target = {
+  NUMBER_0: 0,
+  NUMBER_1: 1,
+  NUMBER_2: 2,
+  NUMBER_3: 3,
+  NUMBER_4: 4,
+} as const;
+
 export type SolutionReadEndPointsList = { [key: string]: Endpnt };
 
 export interface SolutionRead {
@@ -134,21 +124,46 @@ export const Role = {
   NUMBER_2: 2,
 } as const;
 
+export interface UserPatchDto {
+  email?: string | null;
+  grade?: Grade;
+  lastname?: string | null;
+  location?: string | null;
+  locationCoordinates?: number[] | null;
+  name?: string | null;
+  password?: string | null;
+  role?: Role;
+  surname?: string | null;
+  userId: string;
+}
+
 export interface Response {
-  geoObjectCollection?: GeoObjectCollection;
+  geoObjectCollection: GeoObjectCollection;
 }
 
 export interface Point {
-  pos?: string | null;
+  pos: string;
 }
 
 export interface PartnerStatsPatchDto {
-  areCardsAndMaterialsDelivered?: YesNo;
+  areCardsAndMaterialsDelivered?: string | null;
   daysSinceLastCardIssue?: number | null;
   id?: number;
   numberOfApprovedApplications?: number | null;
   numberOfGivenCards?: number | null;
-  whenPointConnected?: WhenConnected;
+  whenPointConnected?: string | null;
+}
+
+export interface PartnerInfoReadDto {
+  address: string;
+  areCardsAndMaterialsDelivered: string;
+  daysSinceLastCardIssue: number;
+  id: number;
+  isActive: boolean;
+  locationCoordinates: number[];
+  numberOfApprovedApplications: number;
+  numberOfGivenCards: number;
+  whenPointConnected: string;
 }
 
 export interface PartnerInfoPatchDto {
@@ -159,25 +174,11 @@ export interface PartnerInfoPatchDto {
 
 export interface PartnerInfoCreationDto {
   address: string;
-}
-
-export interface PartnerInfo {
-  address: string;
-  areCardsAndMaterialsDelivered?: YesNo;
-  daysSinceLastCardIssue?: number | null;
-  id?: number;
   locationCoordinates: number[];
-  numberOfApprovedApplications?: number | null;
-  numberOfGivenCards?: number | null;
-  whenPointConnected?: WhenConnected;
 }
 
 export interface PartnerIdDto {
   id?: number;
-}
-
-export interface MetaDataProperty {
-  geocoderResponseMetaData?: GeocoderResponseMetaData;
 }
 
 export type Grade = (typeof Grade)[keyof typeof Grade];
@@ -190,38 +191,49 @@ export const Grade = {
 } as const;
 
 export interface GeocoderResponseMetaData {
-  found?: string | null;
-  request?: string | null;
-  results?: string | null;
+  found: string;
+  point: string;
+  request: string;
+  results: string;
+}
+
+export interface MetaDataProperty {
+  geocoderResponseMetaData: GeocoderResponseMetaData;
+}
+
+export interface GeocoderCustomResponse {
+  addressLine: string;
+  poss: number[];
 }
 
 export interface GeocodeResponse {
-  response?: Response;
+  response: Response;
 }
 
 export interface GeocodeRequest {
-  address?: string | null;
-}
-
-export interface GeoObjectCollection {
-  featureMember?: FeatureMember[] | null;
-  metaDataProperty?: MetaDataProperty;
+  address: string;
 }
 
 export interface GeoObject {
-  boundedBy?: BoundedBy;
-  description?: string | null;
-  name?: string | null;
-  point?: Point;
+  boundedBy: BoundedBy;
+  description: string;
+  metaDataProperty: MetaDataProperty;
+  name: string;
+  point: Point;
 }
 
 export interface FeatureMember {
-  geoObject?: GeoObject;
+  geoObject: GeoObject;
+}
+
+export interface GeoObjectCollection {
+  featureMember: FeatureMember[];
+  metaDataProperty: MetaDataProperty;
 }
 
 export interface Envelope {
-  lowerCorner?: string | null;
-  upperCorner?: string | null;
+  lowerCorner: string;
+  upperCorner: string;
 }
 
 export interface Endpnt {
@@ -229,15 +241,62 @@ export interface Endpnt {
   routeToEndpoint: string;
 }
 
-export interface ConstantTaskSize {
+export interface ConstantTaskSizeIdDto {
+  id?: number;
+}
+
+export interface ConstantTaskSizeCreationDto {
   grades: Grade[];
-  id: number;
   name: string;
+  rules: number[];
   value: string;
 }
 
+export interface ConstantTaskSize {
+  grades: Grade[];
+  id?: number;
+  name: string;
+  rules: number[];
+  value: string;
+}
+
+export interface ConstantTaskRuleIdDto {
+  id?: number;
+}
+
+export type Condition = (typeof Condition)[keyof typeof Condition];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const Condition = {
+  NUMBER_0: 0,
+  NUMBER_1: 1,
+  NUMBER_2: 2,
+  NUMBER_3: 3,
+  NUMBER_4: 4,
+  NUMBER_5: 5,
+  NUMBER_6: 6,
+  NUMBER_7: 7,
+  NUMBER_8: 8,
+  NUMBER_9: 9,
+  NUMBER_10: 10,
+  NUMBER_11: 11,
+} as const;
+
+export interface ConstantTaskRuleCreationDto {
+  conditions: Condition[];
+  description: string;
+  targets: Target[];
+}
+
+export interface ConstantTaskRule {
+  conditions: Condition[];
+  description: string;
+  id?: number;
+  targets: Target[];
+}
+
 export interface BoundedBy {
-  envelope?: Envelope;
+  envelope: Envelope;
 }
 
 // eslint-disable-next-line
@@ -300,11 +359,125 @@ export const checkIfEmailAlreadyExists = (
   );
 };
 
-export const getContstantTasksGetConstantTasks = (
+export const getConstantTasks = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ConstantTaskSize[]>(
-    { url: `/ContstantTasks/GetConstantTasks`, method: "get" },
+    { url: `/ConstantTasks/ConstantTasks/Get`, method: "get" },
+    options,
+  );
+};
+
+export const newConstantTask = (
+  constantTaskSizeCreationDto: BodyType<ConstantTaskSizeCreationDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskSize>(
+    {
+      url: `/ConstantTasks/ConstantTasks/New`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: constantTaskSizeCreationDto,
+    },
+    options,
+  );
+};
+
+export const updateConstantTask = (
+  constantTaskSize: BodyType<ConstantTaskSize>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskSize>(
+    {
+      url: `/ConstantTasks/ConstantTasks/Patch`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: constantTaskSize,
+    },
+    options,
+  );
+};
+
+export const deleteConstantTask = (
+  constantTaskSizeIdDto: BodyType<ConstantTaskSizeIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskSize>(
+    {
+      url: `/ConstantTasks/ConstantTasks/Delete`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: constantTaskSizeIdDto,
+    },
+    options,
+  );
+};
+
+export const getConstantTaskRules = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskRule[]>(
+    { url: `/ConstantTasks/ConstantTasks/Rules/Get`, method: "get" },
+    options,
+  );
+};
+
+export const newConstantTaskRule = (
+  constantTaskRuleCreationDto: BodyType<ConstantTaskRuleCreationDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskRule>(
+    {
+      url: `/ConstantTasks/ConstantTasks/Rule/New`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: constantTaskRuleCreationDto,
+    },
+    options,
+  );
+};
+
+export const updateConstantTaskRule = (
+  constantTaskRule: BodyType<ConstantTaskRule>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskRule>(
+    {
+      url: `/ConstantTasks/ConstantTasks/Rule/Patch`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: constantTaskRule,
+    },
+    options,
+  );
+};
+
+export const deleteConstantTaskRule = (
+  constantTaskRuleIdDto: BodyType<ConstantTaskRuleIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskRule>(
+    {
+      url: `/ConstantTasks/ConstantTasks/Rule/Delete`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: constantTaskRuleIdDto,
+    },
+    options,
+  );
+};
+
+export const checkIfAnyRuleIsSuitable = (
+  targetDataset: BodyType<TargetDataset>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskRule[]>(
+    {
+      url: `/ConstantTasks/ConstantTasks/Rule/Test`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: targetDataset,
+    },
     options,
   );
 };
@@ -313,7 +486,7 @@ export const geocoder = (
   geocodeRequest: BodyType<GeocodeRequest>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<GeocodeResponse>(
+  return customInstance<GeocoderCustomResponse>(
     {
       url: `/Maps/Geocoder`,
       method: "post",
@@ -343,7 +516,7 @@ export const createNewPartner = (
   partnerInfoCreationDto: BodyType<PartnerInfoCreationDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<void>(
+  return customInstance<PartnerInfoReadDto>(
     {
       url: `/Partner/New`,
       method: "post",
@@ -358,7 +531,7 @@ export const patchPartner = (
   partnerInfoPatchDto: BodyType<PartnerInfoPatchDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<void>(
+  return customInstance<PartnerInfoReadDto>(
     {
       url: `/Partner/Patch`,
       method: "post",
@@ -372,7 +545,7 @@ export const patchPartner = (
 export const getAllPartners = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<PartnerInfo>(
+  return customInstance<PartnerInfoReadDto[]>(
     { url: `/Partner/GetAll`, method: "get" },
     options,
   );
@@ -382,7 +555,7 @@ export const getPartner = (
   partnerIdDto: BodyType<PartnerIdDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<PartnerInfo>(
+  return customInstance<PartnerInfoReadDto>(
     {
       url: `/Partner/Get`,
       method: "post",
@@ -397,9 +570,24 @@ export const deletePartner = (
   partnerIdDto: BodyType<PartnerIdDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<PartnerInfo>(
+  return customInstance<PartnerInfoReadDto>(
     {
       url: `/Partner/Delete`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: partnerIdDto,
+    },
+    options,
+  );
+};
+
+export const reversePartnerStatus = (
+  partnerIdDto: BodyType<PartnerIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PartnerInfoReadDto>(
+    {
+      url: `/Partner/Switch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerIdDto,
@@ -412,7 +600,7 @@ export const patchPartnerStatistics = (
   partnerStatsPatchDto: BodyType<PartnerStatsPatchDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<void>(
+  return customInstance<PartnerInfoReadDto>(
     {
       url: `/Partner/Stats/Patch`,
       method: "post",
@@ -423,35 +611,11 @@ export const patchPartnerStatistics = (
   );
 };
 
-export const getAllPartnersStatistics = (
-  options?: SecondParameter<typeof customInstance>,
-) => {
-  return customInstance<PartnerInfo>(
-    { url: `/Partner/Stats/Get`, method: "get" },
-    options,
-  );
-};
-
-export const getPartnerStatistics = (
-  partnerIdDto: BodyType<PartnerIdDto>,
-  options?: SecondParameter<typeof customInstance>,
-) => {
-  return customInstance<PartnerInfo>(
-    {
-      url: `/Partner/Stats/Get`,
-      method: "post",
-      headers: { "Content-Type": "application/json-patch+json" },
-      data: partnerIdDto,
-    },
-    options,
-  );
-};
-
 export const deletePartnerStatistics = (
   partnerIdDto: BodyType<PartnerIdDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<PartnerInfo>(
+  return customInstance<PartnerInfoReadDto>(
     {
       url: `/Partner/Stats/Delete`,
       method: "post",
@@ -577,8 +741,32 @@ export type GetAuthLogoutResult = NonNullable<
 export type CheckIfEmailAlreadyExistsResult = NonNullable<
   Awaited<ReturnType<typeof checkIfEmailAlreadyExists>>
 >;
-export type GetContstantTasksGetConstantTasksResult = NonNullable<
-  Awaited<ReturnType<typeof getContstantTasksGetConstantTasks>>
+export type GetConstantTasksResult = NonNullable<
+  Awaited<ReturnType<typeof getConstantTasks>>
+>;
+export type NewConstantTaskResult = NonNullable<
+  Awaited<ReturnType<typeof newConstantTask>>
+>;
+export type UpdateConstantTaskResult = NonNullable<
+  Awaited<ReturnType<typeof updateConstantTask>>
+>;
+export type DeleteConstantTaskResult = NonNullable<
+  Awaited<ReturnType<typeof deleteConstantTask>>
+>;
+export type GetConstantTaskRulesResult = NonNullable<
+  Awaited<ReturnType<typeof getConstantTaskRules>>
+>;
+export type NewConstantTaskRuleResult = NonNullable<
+  Awaited<ReturnType<typeof newConstantTaskRule>>
+>;
+export type UpdateConstantTaskRuleResult = NonNullable<
+  Awaited<ReturnType<typeof updateConstantTaskRule>>
+>;
+export type DeleteConstantTaskRuleResult = NonNullable<
+  Awaited<ReturnType<typeof deleteConstantTaskRule>>
+>;
+export type CheckIfAnyRuleIsSuitableResult = NonNullable<
+  Awaited<ReturnType<typeof checkIfAnyRuleIsSuitable>>
 >;
 export type GeocoderResult = NonNullable<Awaited<ReturnType<typeof geocoder>>>;
 export type GeosuggestResult = NonNullable<
@@ -599,14 +787,11 @@ export type GetPartnerResult = NonNullable<
 export type DeletePartnerResult = NonNullable<
   Awaited<ReturnType<typeof deletePartner>>
 >;
+export type ReversePartnerStatusResult = NonNullable<
+  Awaited<ReturnType<typeof reversePartnerStatus>>
+>;
 export type PatchPartnerStatisticsResult = NonNullable<
   Awaited<ReturnType<typeof patchPartnerStatistics>>
->;
-export type GetAllPartnersStatisticsResult = NonNullable<
-  Awaited<ReturnType<typeof getAllPartnersStatistics>>
->;
-export type GetPartnerStatisticsResult = NonNullable<
-  Awaited<ReturnType<typeof getPartnerStatistics>>
 >;
 export type DeletePartnerStatisticsResult = NonNullable<
   Awaited<ReturnType<typeof deletePartnerStatistics>>

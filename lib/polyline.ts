@@ -4,7 +4,7 @@ export const customPolylineDecode = function (
   str: string,
   precision?: number,
 ): LatLngExpression[] {
-  var index = 0,
+  let index = 0,
     lat = 0,
     lng = 0,
     coordinates = [],

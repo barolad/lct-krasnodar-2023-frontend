@@ -20,8 +20,6 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { DataTableFacetedFilter } from "@/components/forms/data-table-faceted-filter";
-import { statuses } from "@/app/admin/workers/_components/faceted-filter-data";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,13 +52,6 @@ export function DataTable<TData, TValue>({
           onChange={(event) => table.setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />
-        {table.getColumn("case") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("case")}
-            title="Статус"
-            options={statuses}
-          />
-        )}
       </div>
       <div className="rounded-md border">
         <Table>

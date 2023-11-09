@@ -20,11 +20,44 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ChooseOffice from "@/app/admin/workers/_components/choose-office";
-import { UserShortWCaseRead } from "@/shared/api/api.generated";
+import ChooseOffice from "@/app/admin/_components/choose-office";
+import {
+  Grade,
+  patchUser,
+  UserShortWCaseRead,
+} from "@/shared/api/api.generated";
 import { workerFormSchema } from "@/app/admin/workers/_components/worker-form-schema";
+import { useMutation } from "@tanstack/react-query";
+import { startTransition } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const WorkerEditForm = (worker: UserShortWCaseRead) => {
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const { mutate } = useMutation({
+    mutationFn: async (values: z.infer<typeof workerFormSchema>) =>
+      patchUser({
+        userId: worker.id,
+        email: values.email,
+        grade: Number(values.grade) as Grade,
+        lastname: values.lastname,
+        location: values.location.location,
+        locationCoordinates: values.location.locationCoordinates,
+        name: values.name,
+        password: values.password,
+        role: 2,
+        surname: values.surname,
+      }),
+    onSuccess: () => {
+      toast({ title: "Пользователь обновлён" });
+      startTransition(() => {
+        router.refresh();
+      });
+    },
+  });
+
   const form = useForm<z.infer<typeof workerFormSchema>>({
     resolver: zodResolver(workerFormSchema),
     defaultValues: {
@@ -42,7 +75,7 @@ const WorkerEditForm = (worker: UserShortWCaseRead) => {
     },
   });
   function onSubmit(values: z.infer<typeof workerFormSchema>) {
-    console.log(values);
+    mutate(values);
   }
   return (
     <Form {...form}>

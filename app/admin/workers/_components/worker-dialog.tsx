@@ -13,6 +13,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import WorkerEditForm from "@/app/admin/workers/_components/worker-edit-form";
 import { UserShortWCaseRead } from "@/shared/api/api.generated";
 import DeleteWorkerButton from "@/app/admin/workers/_components/delete-worker-button";
+import WorkerToVacationButton from "@/app/admin/workers/_components/worker-to-vacation-button";
+import WorkerToMedicalButton from "@/app/admin/workers/_components/worker-to-medical-button";
+import WorkerToDefaultCaseButton from "@/app/admin/workers/_components/worker-to-default-case-button";
 
 const CustomRow = ({ title, value }: { title: string; value: string }) => {
   return (
@@ -46,7 +49,7 @@ const WorkerDialog = (worker: UserShortWCaseRead) => {
       ) : (
         <>
           <div className="grid grid-cols-3 gap-4">
-            <div className="flex h-full items-center justify-center rounded-md bg-neutral-300">
+            <div className="flex h-full items-center justify-center rounded-md bg-secondary">
               <UserCircle2 className="h-10 w-10 opacity-50" />
             </div>
             <div className="col-span-2 space-y-2">
@@ -56,19 +59,38 @@ const WorkerDialog = (worker: UserShortWCaseRead) => {
               <CustomRow title="Уровень" value={worker.grade || ""} />
             </div>
           </div>
+          {(worker.case.toLowerCase() === "отпуск" ||
+            worker.case.toLowerCase() === "больничный") && (
+            <div className="flex w-full items-center justify-between rounded-md bg-muted px-4 py-2 text-muted-foreground">
+              {worker.case.toLowerCase() === "отпуск" && (
+                <p>Сотрудник в отпуске</p>
+              )}
+              {worker.case.toLowerCase() === "больничный" && (
+                <p>Сотрудник на больничном</p>
+              )}
+              <WorkerToDefaultCaseButton id={worker.id} />
+            </div>
+          )}
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Офис</p>
             <Map coordinates={worker.locationCoordinates as LatLngExpression} />
           </div>
+          {worker.case.toLowerCase() == "доступен" && (
+            <div className="grid w-full grid-cols-2 gap-4">
+              <WorkerToVacationButton id={worker.id} />
+              <WorkerToMedicalButton id={worker.id} />
+            </div>
+          )}
           <DialogFooter>
-            <Button>Подготовить отчёт</Button>
-            <Button size="icon" variant="secondary">
-              <PencilLine
-                className="opacity-70"
-                onClick={() => setEditing(true)}
-              />
-            </Button>
-
+            <Button className="w-full">Подготовить отчёт</Button>
+            <div>
+              <Button size="icon" variant="secondary">
+                <PencilLine
+                  className="opacity-70"
+                  onClick={() => setEditing(true)}
+                />
+              </Button>
+            </div>
             <DialogClose>
               <DeleteWorkerButton id={worker.id} />
             </DialogClose>

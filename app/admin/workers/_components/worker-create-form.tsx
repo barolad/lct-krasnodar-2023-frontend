@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ChooseOffice from "@/app/admin/workers/_components/choose-office";
+import ChooseOffice from "@/app/admin/_components/choose-office";
 import { workerFormSchema } from "@/app/admin/workers/_components/worker-form-schema";
 import { useMutation } from "@tanstack/react-query";
 import { Grade, postUserNew } from "@/shared/api/api.generated";
