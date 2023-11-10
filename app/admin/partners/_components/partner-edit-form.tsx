@@ -96,7 +96,7 @@ const PartnerEditForm = ({ partner }: { partner: PartnerInfoReadDto }) => {
           name="areCardsAndMaterialsDelivered"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Когда подключена точка?</FormLabel>
+              <FormLabel>Карты и материалы доставлены?</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>

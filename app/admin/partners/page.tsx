@@ -7,7 +7,7 @@ import PartnerCreateButton from "@/app/admin/partners/_components/partner-create
 import PartnersList from "@/app/admin/partners/_components/partners-list";
 
 const PartnersPage = async () => {
-  const partners = await getAllPartners();
+  const partners = await getAllPartners({ cache: "no-cache" });
   console.log("***");
   console.log(partners);
 
@@ -23,9 +23,9 @@ const PartnersPage = async () => {
       <DashboardHeader heading="Партнёры">
         <PartnerCreateButton />
       </DashboardHeader>
-      <div className="grid h-[600px] grid-cols-2 gap-8">
+      <div className="mx-2 mb-10 grid grid-cols-1 gap-8 lg:mb-0 lg:h-[600px] lg:grid-cols-2">
         <div>{partners.length && <PartnersList partners={partners} />}</div>
-        <div>
+        <div className="h-[600px]">
           <Map partners={partners} />
         </div>
       </div>

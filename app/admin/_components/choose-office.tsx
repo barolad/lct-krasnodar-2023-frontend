@@ -35,7 +35,7 @@ const ChooseOffice = ({
       // @ts-ignore
       locationCoordinates: addresses?.poss || [0, 0],
     });
-  }, [addresses, setValue]);
+  }, [addresses]);
 
   const debounced = useDebouncedCallback(async (inputValue: string) => {
     const response = await geocoder({ address: inputValue });

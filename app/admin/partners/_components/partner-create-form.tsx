@@ -37,7 +37,6 @@ const PartnerCreateForm = () => {
       }),
     onSuccess: () => {
       toast({ title: "Партнёр создан" });
-      form.reset();
       startTransition(() => {
         router.refresh();
       });

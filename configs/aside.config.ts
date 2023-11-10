@@ -14,6 +14,11 @@ export interface DashboardNavProps {
 
 export const AsideConfig: SidebarNavItem[] = [
   {
+    title: "Партнёры",
+    href: "/admin/partners",
+    icon: "partners",
+  },
+  {
     title: "Сотрудники",
     href: "/admin/workers",
     icon: "users",
@@ -22,10 +27,5 @@ export const AsideConfig: SidebarNavItem[] = [
     title: "Задачи",
     href: "/admin/tasks",
     icon: "tasks",
-  },
-  {
-    title: "Партнёры",
-    href: "/admin/partners",
-    icon: "partners",
   },
 ];

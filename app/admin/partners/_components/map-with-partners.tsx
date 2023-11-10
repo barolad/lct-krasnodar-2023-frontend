@@ -1,10 +1,36 @@
 "use client";
 import "leaflet/dist/leaflet.css";
 import "@/styles/leaflet.css";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, Popup, TileLayer } from "react-leaflet";
 import { CRS, LatLngExpression } from "leaflet";
-import { StartMarker } from "@/components/markers";
+import { FinishMarker, StartMarker } from "@/components/markers";
 import { PartnerInfoReadDto } from "@/shared/api/api.generated";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+import PartnerDialog from "@/app/admin/partners/_components/partner-dialog";
+
+const PopupContainer = ({ partner }: { partner: PartnerInfoReadDto }) => {
+  return (
+    <>
+      <Popup className="space-y-2">
+        <p>{partner.address}</p>{" "}
+        <div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="secondary" size="sm" className="w-full">
+                Подробнее
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <PartnerDialog partner={partner} />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </Popup>
+    </>
+  );
+};
 
 const MapWithPartners = ({ partners }: { partners: PartnerInfoReadDto[] }) => {
   return (
@@ -18,13 +44,28 @@ const MapWithPartners = ({ partners }: { partners: PartnerInfoReadDto[] }) => {
           subdomains={["01", "02", "03", "04"]}
           url="https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&scale=1&lang=ru_RU"
           attribution='©<a http="https://yandex.ru" target="_blank"> Yandex</a>'
-          className="yandex-tile-layer brightness-90"
         />
         {partners.map((partner) => (
-          <StartMarker
-            position={partner.locationCoordinates as LatLngExpression}
-            key={partner.id}
-          />
+          <>
+            {partner.isActive ? (
+              <StartMarker
+                position={partner.locationCoordinates as LatLngExpression}
+                key={partner.id}
+              >
+                <PopupContainer partner={partner} />
+              </StartMarker>
+            ) : (
+              <FinishMarker
+                position={partner.locationCoordinates as LatLngExpression}
+                key={partner.id}
+              >
+                <Popup>
+                  {partner.address}
+                  <PopupContainer partner={partner} />
+                </Popup>
+              </FinishMarker>
+            )}
+          </>
         ))}
         {/**/}
       </MapContainer>{" "}

@@ -115,6 +115,14 @@ export interface Solutions {
   solutionList: SolutionRead[];
 }
 
+export type RuleQuantor = (typeof RuleQuantor)[keyof typeof RuleQuantor];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RuleQuantor = {
+  NUMBER_0: 0,
+  NUMBER_1: 1,
+} as const;
+
 export type Role = (typeof Role)[keyof typeof Role];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -141,6 +149,15 @@ export interface Response {
   geoObjectCollection: GeoObjectCollection;
 }
 
+export type Priority = (typeof Priority)[keyof typeof Priority];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const Priority = {
+  NUMBER_0: 0,
+  NUMBER_1: 1,
+  NUMBER_2: 2,
+} as const;
+
 export interface Point {
   pos: string;
 }
@@ -148,10 +165,18 @@ export interface Point {
 export interface PartnerStatsPatchDto {
   areCardsAndMaterialsDelivered?: string | null;
   daysSinceLastCardIssue?: number | null;
-  id?: number;
+  id: number;
   numberOfApprovedApplications?: number | null;
   numberOfGivenCards?: number | null;
   whenPointConnected?: string | null;
+}
+
+export interface PartnerShortInfoWTask {
+  address: string;
+  id: number;
+  isActive: boolean;
+  locationCoordinates: number[];
+  tasks: ConstantTaskSize[];
 }
 
 export interface PartnerInfoReadDto {
@@ -168,7 +193,7 @@ export interface PartnerInfoReadDto {
 
 export interface PartnerInfoPatchDto {
   address?: string | null;
-  id?: number;
+  id: number;
   locationCoordinates?: number[] | null;
 }
 
@@ -178,7 +203,13 @@ export interface PartnerInfoCreationDto {
 }
 
 export interface PartnerIdDto {
-  id?: number;
+  id: number;
+}
+
+export interface Office {
+  address: string;
+  id: number;
+  locationCoordinates: number[];
 }
 
 export type Grade = (typeof Grade)[keyof typeof Grade];
@@ -241,13 +272,25 @@ export interface Endpnt {
   routeToEndpoint: string;
 }
 
+export interface ConstantTaskSizeRead {
+  grades: Grade[];
+  id: number;
+  name: string;
+  priority: Priority;
+  ruleQuantor: RuleQuantor;
+  rules: number[];
+  value: string;
+}
+
 export interface ConstantTaskSizeIdDto {
-  id?: number;
+  id: number;
 }
 
 export interface ConstantTaskSizeCreationDto {
   grades: Grade[];
   name: string;
+  priority: Priority;
+  ruleQuantor: RuleQuantor;
   rules: number[];
   value: string;
 }
@@ -256,6 +299,8 @@ export interface ConstantTaskSize {
   grades: Grade[];
   id?: number;
   name: string;
+  priority: Priority;
+  ruleQuantor: RuleQuantor;
   rules: number[];
   value: string;
 }
@@ -280,12 +325,14 @@ export const Condition = {
   NUMBER_9: 9,
   NUMBER_10: 10,
   NUMBER_11: 11,
+  NUMBER_12: 12,
 } as const;
 
 export interface ConstantTaskRuleCreationDto {
   conditions: Condition[];
   description: string;
   targets: Target[];
+  values: string[];
 }
 
 export interface ConstantTaskRule {
@@ -293,6 +340,7 @@ export interface ConstantTaskRule {
   description: string;
   id?: number;
   targets: Target[];
+  values: string[];
 }
 
 export interface BoundedBy {
@@ -306,6 +354,45 @@ type SecondParameter<T extends (...args: any) => any> = T extends (
 ) => any
   ? P
   : never;
+
+export const getRulesForPartnerWithGivenId = (
+  partnerIdDto: BodyType<PartnerIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskRule[]>(
+    {
+      url: `/Assign/GetRules`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: partnerIdDto,
+    },
+    options,
+  );
+};
+
+export const getTasksForPartnerWithGivenId = (
+  partnerIdDto: BodyType<PartnerIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<ConstantTaskSize[]>(
+    {
+      url: `/Assign/GetTasks`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: partnerIdDto,
+    },
+    options,
+  );
+};
+
+export const getTasksForPartners = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PartnerShortInfoWTask[]>(
+    { url: `/Partner/GetTasks`, method: "get" },
+    options,
+  );
+};
 
 export const getAssignmentGetMatrix = (
   options?: SecondParameter<typeof customInstance>,
@@ -362,8 +449,8 @@ export const checkIfEmailAlreadyExists = (
 export const getConstantTasks = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<ConstantTaskSize[]>(
-    { url: `/ConstantTasks/ConstantTasks/Get`, method: "get" },
+  return customInstance<ConstantTaskSizeRead[]>(
+    { url: `/ConstantTasks/Get`, method: "get" },
     options,
   );
 };
@@ -372,9 +459,9 @@ export const newConstantTask = (
   constantTaskSizeCreationDto: BodyType<ConstantTaskSizeCreationDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<ConstantTaskSize>(
+  return customInstance<ConstantTaskSizeRead>(
     {
-      url: `/ConstantTasks/ConstantTasks/New`,
+      url: `/ConstantTasks/New`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskSizeCreationDto,
@@ -387,9 +474,9 @@ export const updateConstantTask = (
   constantTaskSize: BodyType<ConstantTaskSize>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<ConstantTaskSize>(
+  return customInstance<ConstantTaskSizeRead>(
     {
-      url: `/ConstantTasks/ConstantTasks/Patch`,
+      url: `/ConstantTasks/Patch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskSize,
@@ -402,9 +489,9 @@ export const deleteConstantTask = (
   constantTaskSizeIdDto: BodyType<ConstantTaskSizeIdDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<ConstantTaskSize>(
+  return customInstance<ConstantTaskSizeRead>(
     {
-      url: `/ConstantTasks/ConstantTasks/Delete`,
+      url: `/ConstantTasks/Delete`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskSizeIdDto,
@@ -417,7 +504,7 @@ export const getConstantTaskRules = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ConstantTaskRule[]>(
-    { url: `/ConstantTasks/ConstantTasks/Rules/Get`, method: "get" },
+    { url: `/ConstantTasks/Rules/Get`, method: "get" },
     options,
   );
 };
@@ -428,7 +515,7 @@ export const newConstantTaskRule = (
 ) => {
   return customInstance<ConstantTaskRule>(
     {
-      url: `/ConstantTasks/ConstantTasks/Rule/New`,
+      url: `/ConstantTasks/Rule/New`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskRuleCreationDto,
@@ -443,7 +530,7 @@ export const updateConstantTaskRule = (
 ) => {
   return customInstance<ConstantTaskRule>(
     {
-      url: `/ConstantTasks/ConstantTasks/Rule/Patch`,
+      url: `/ConstantTasks/Rule/Patch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskRule,
@@ -458,7 +545,7 @@ export const deleteConstantTaskRule = (
 ) => {
   return customInstance<ConstantTaskRule>(
     {
-      url: `/ConstantTasks/ConstantTasks/Rule/Delete`,
+      url: `/ConstantTasks/Rule/Delete`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskRuleIdDto,
@@ -473,7 +560,7 @@ export const checkIfAnyRuleIsSuitable = (
 ) => {
   return customInstance<ConstantTaskRule[]>(
     {
-      url: `/ConstantTasks/ConstantTasks/Rule/Test`,
+      url: `/ConstantTasks/Rule/Test`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: targetDataset,
@@ -717,6 +804,15 @@ export const deleteWorker = (
   );
 };
 
+export const getOfficeGet = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<Office[]>(
+    { url: `/Office/Get`, method: "get" },
+    options,
+  );
+};
+
 export const solveVehicleRoutingProblem = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
@@ -726,6 +822,15 @@ export const solveVehicleRoutingProblem = (
   );
 };
 
+export type GetRulesForPartnerWithGivenIdResult = NonNullable<
+  Awaited<ReturnType<typeof getRulesForPartnerWithGivenId>>
+>;
+export type GetTasksForPartnerWithGivenIdResult = NonNullable<
+  Awaited<ReturnType<typeof getTasksForPartnerWithGivenId>>
+>;
+export type GetTasksForPartnersResult = NonNullable<
+  Awaited<ReturnType<typeof getTasksForPartners>>
+>;
 export type GetAssignmentGetMatrixResult = NonNullable<
   Awaited<ReturnType<typeof getAssignmentGetMatrix>>
 >;
@@ -819,6 +924,9 @@ export type PatchWorkerCaseResult = NonNullable<
 >;
 export type DeleteWorkerResult = NonNullable<
   Awaited<ReturnType<typeof deleteWorker>>
+>;
+export type GetOfficeGetResult = NonNullable<
+  Awaited<ReturnType<typeof getOfficeGet>>
 >;
 export type SolveVehicleRoutingProblemResult = NonNullable<
   Awaited<ReturnType<typeof solveVehicleRoutingProblem>>

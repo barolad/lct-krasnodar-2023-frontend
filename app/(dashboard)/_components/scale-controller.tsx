@@ -16,7 +16,7 @@ const ScaleController = () => {
   };
 
   return (
-    <div className="fixed bottom-20 left-4 z-40">
+    <div className="z-40">
       <div className="flex flex-col space-y-4">
         <Button
           size="icon"
