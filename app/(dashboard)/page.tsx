@@ -9,8 +9,7 @@ import { notFound, redirect } from "next/navigation";
 
 const HomePage = async () => {
   const user = await getApiAuthMe({ cache: "no-cache" });
-
-  console.log(user);
+  if (!user) redirect("/auth");
   if (user.role === "Менеджер") {
     const partners = await getTasksForPartners({ cache: "no-cache" });
     const offices = await getApiOfficeGet({ cache: "no-cache" });
