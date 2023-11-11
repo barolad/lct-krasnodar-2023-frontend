@@ -65,7 +65,7 @@ const WorkerEditForm = (worker: UserShortWCaseRead) => {
       surname: worker.surname,
       lastname: worker.lastname,
       grade:
-        worker.grade === "Сеньор" ? "0" : worker.grade === "Мидл" ? "1" : "0",
+        worker.grade === "Сениор" ? "0" : worker.grade === "Мидл" ? "1" : "0",
       email: worker.email,
       password: "",
       location: {
@@ -160,7 +160,7 @@ const WorkerEditForm = (worker: UserShortWCaseRead) => {
                 <SelectContent>
                   <SelectItem value="2">Джун</SelectItem>
                   <SelectItem value="1">Мидл</SelectItem>
-                  <SelectItem value="0">Сеньор</SelectItem>
+                  <SelectItem value="0">Сениор</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

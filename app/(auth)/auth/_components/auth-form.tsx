@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { postAuthLogin } from "@/shared/api/api.generated";
+import { postApiAuthLogin } from "@/shared/api/api.generated";
 import Cookies from "universal-cookie";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -40,7 +40,7 @@ const AuthForm = () => {
 
   const { mutate } = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) =>
-      await postAuthLogin({
+      await postApiAuthLogin({
         ...values,
       }),
     onSuccess: (data) => {

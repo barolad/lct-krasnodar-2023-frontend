@@ -25,6 +25,18 @@ export const FinishMarker = (props: MarkerProps) => {
   );
 };
 
+export const CurrentPosMarker = (props: MarkerProps) => {
+  return (
+    <Marker
+      icon={divIcon({
+        className:
+          "h-12 w-12 bg-blue-500 rounded-full outline outline-1 outline-white",
+      })}
+      {...props}
+    />
+  );
+};
+
 export const PartnerMarker = (props: MarkerProps) => {
   return (
     <Marker

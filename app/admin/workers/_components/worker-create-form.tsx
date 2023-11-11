@@ -23,7 +23,7 @@ import {
 import ChooseOffice from "@/app/admin/_components/choose-office";
 import { workerFormSchema } from "@/app/admin/workers/_components/worker-form-schema";
 import { useMutation } from "@tanstack/react-query";
-import { Grade, postUserNew } from "@/shared/api/api.generated";
+import { Grade, postApiUserNew } from "@/shared/api/api.generated";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { startTransition } from "react";
@@ -45,7 +45,7 @@ const WorkerCreateForm = () => {
 
   const { mutate } = useMutation({
     mutationFn: async (values: z.infer<typeof workerFormSchema>) =>
-      postUserNew({
+      postApiUserNew({
         email: values.email,
         grade: Number(values.grade) as Grade,
         lastname: values.lastname,
@@ -149,7 +149,7 @@ const WorkerCreateForm = () => {
                 <SelectContent>
                   <SelectItem value="2">Джун</SelectItem>
                   <SelectItem value="1">Мидл</SelectItem>
-                  <SelectItem value="0">Сеньор</SelectItem>
+                  <SelectItem value="0">Сениор</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

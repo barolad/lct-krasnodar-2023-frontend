@@ -49,7 +49,7 @@ const WorkersRoutes = ({ todayTasks }: { todayTasks: DayTasks }) => {
                       <div className="space-y-2">
                         <div>
                           <Badge>
-                            {tasksForWorker.worker.grade === 0 && "Сеньор"}
+                            {tasksForWorker.worker.grade === 0 && "Сениор"}
                             {tasksForWorker.worker.grade === 1 && "Мидл"}
                             {tasksForWorker.worker.grade === 2 && "Джун"}
                           </Badge>

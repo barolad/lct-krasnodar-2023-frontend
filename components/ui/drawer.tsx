@@ -16,7 +16,7 @@ const DrawerContent = forwardRef<
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed inset-x-0 bottom-0 z-50 mt-24 h-[96%] p-4 rounded-t-[10px] bg-background",
+        "fixed inset-x-0 bottom-0 z-50 mt-24 h-[96%] p-4 rounded-t-[10px] bg-background w-full md:max-w-sm mx-auto",
         className,
       )}
       {...props}

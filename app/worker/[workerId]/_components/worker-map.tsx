@@ -1,18 +1,37 @@
 "use client";
 import "leaflet/dist/leaflet.css";
 import "@/styles/leaflet.css";
-import { CRS, LatLngBoundsExpression } from "leaflet";
+import { CRS, LatLngBoundsExpression, LatLngExpression } from "leaflet";
 import YandexTileLayer from "@/components/yandex-tile-layer";
 import { MapContainer, Polyline } from "react-leaflet";
 import { AssignedTaskShort } from "@/shared/api/api.generated";
 import { customPolylineDecode } from "@/lib/polyline";
-import { FinishMarker, StartMarker } from "@/components/markers";
+import {
+  CurrentPosMarker,
+  FinishMarker,
+  StartMarker,
+} from "@/components/markers";
+import { useEffect, useState } from "react";
 const bounds: LatLngBoundsExpression = [
   [45.11246, 39.07454],
   [44.9902, 38.91054],
 ];
 const WorkerMap = ({ task }: { task: AssignedTaskShort }) => {
+  const [currentLocation, setCurrentLocation] =
+    useState<null | LatLngExpression>(null);
   const track = customPolylineDecode(task.polyline.shape);
+  useEffect(() => {
+    // Get user's current location
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setCurrentLocation([latitude, longitude]);
+      },
+      (error) => {
+        console.error(error);
+      },
+    );
+  }, []);
   return (
     <>
       <MapContainer
@@ -24,6 +43,7 @@ const WorkerMap = ({ task }: { task: AssignedTaskShort }) => {
         crs={CRS.EPSG3395}
         fadeAnimation
       >
+        {currentLocation && <CurrentPosMarker position={currentLocation} />}
         <YandexTileLayer />
         <Polyline
           positions={track}

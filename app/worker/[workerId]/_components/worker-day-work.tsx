@@ -3,7 +3,9 @@ import { DayTaskSolution } from "@/shared/api/api.generated";
 import MapProvider from "@/app/worker/[workerId]/_components/map-provider";
 import useStep from "@/hooks/use-step";
 import { Play } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const WorkerDayWork = ({
   dayTask,
@@ -35,22 +37,36 @@ const WorkerDayWork = ({
             </p>
           </div>
           <div className="flex flex-nowrap space-x-2">
-            {currentStep !== 0 && (
-              <div>
-                <Button variant="secondary" onClick={() => previousStep()}>
-                  <Play className="rotate-180" />
-                </Button>
+            <div className="flex w-full flex-col gap-2">
+              <Link
+                target="_blank"
+                href={`https://yandex.ru/maps/?rtext=${dayTask.tasks[currentStep].locationCoordinatesFrom[0]},${dayTask.tasks[currentStep].locationCoordinatesFrom[1]}~${dayTask.tasks[currentStep].locationCoordinatesTo[0]},${dayTask.tasks[currentStep].locationCoordinatesTo[1]}&rtt=auto`}
+                className={cn(
+                  buttonVariants({ variant: "secondary" }),
+                  "w-full",
+                )}
+              >
+                Открыть в навигаторе
+              </Link>
+              <div className="flex flex-nowrap gap-2">
+                {currentStep !== 0 && (
+                  <div>
+                    <Button variant="secondary" onClick={() => previousStep()}>
+                      <Play className="rotate-180" />
+                    </Button>
+                  </div>
+                )}
+                {currentStep === dayTask.tasks.length - 1 ? (
+                  <Button className="w-full" onClick={() => nextDay()}>
+                    К следующему дню
+                  </Button>
+                ) : (
+                  <Button className="w-full" onClick={() => nextStep()}>
+                    Следующее
+                  </Button>
+                )}
               </div>
-            )}
-            {currentStep === dayTask.tasks.length - 1 ? (
-              <Button className="w-full" onClick={() => nextDay()}>
-                К следующему дню
-              </Button>
-            ) : (
-              <Button className="w-full" onClick={() => nextStep()}>
-                Следующее
-              </Button>
-            )}
+            </div>
           </div>
         </div>
       </div>

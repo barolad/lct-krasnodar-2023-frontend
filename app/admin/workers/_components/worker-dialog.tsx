@@ -1,8 +1,11 @@
 import {
+  Dialog,
   DialogClose,
+  DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { PencilLine, UserCircle2 } from "lucide-react";
@@ -16,8 +19,15 @@ import DeleteWorkerButton from "@/app/admin/workers/_components/delete-worker-bu
 import WorkerToVacationButton from "@/app/admin/workers/_components/worker-to-vacation-button";
 import WorkerToMedicalButton from "@/app/admin/workers/_components/worker-to-medical-button";
 import WorkerToDefaultCaseButton from "@/app/admin/workers/_components/worker-to-default-case-button";
+import WorkerReportDialog from "@/app/admin/workers/_components/worker-report-dialog";
 
-const CustomRow = ({ title, value }: { title: string; value: string }) => {
+export const CustomRow = ({
+  title,
+  value = " ",
+}: {
+  title: string;
+  value?: string;
+}) => {
   return (
     <div className="flex w-full flex-col">
       <p className="text-sm text-muted-foreground">{title}</p>
@@ -82,7 +92,12 @@ const WorkerDialog = (worker: UserShortWCaseRead) => {
             </div>
           )}
           <DialogFooter>
-            <Button className="w-full">Подготовить отчёт</Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="w-full">Подготовить отчёт</Button>
+              </DialogTrigger>
+              <WorkerReportDialog worker={worker} />
+            </Dialog>
             <div>
               <Button size="icon" variant="secondary">
                 <PencilLine

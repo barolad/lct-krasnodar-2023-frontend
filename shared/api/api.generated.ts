@@ -6,6 +6,29 @@
  */
 import { customInstance } from "./custom-instance";
 import type { BodyType } from "./custom-instance";
+export interface WorkerReportShow {
+  completedTasks: number;
+  completedTasksOfEachGrade: number[];
+  completedTasksOfEachType: number[];
+  daysWithoutRest: number;
+  kilometersPassed: number;
+  mainOffice: string;
+  mainOfficeLocation: number[];
+  mostPopularTask: string;
+  timeSpentOnTasks: number;
+  updatedAt: string;
+  workerCases: string;
+  workerEmail: string;
+  workerLastname: string;
+  workerName: string;
+  workerRole: string;
+  workerSurname: string;
+}
+
+export interface WorkerReportIdDto {
+  workerId?: string;
+}
+
 export interface WorkerCasePatchDto {
   case: string;
   id: string;
@@ -105,6 +128,7 @@ export interface TargetDataset {
 
 export type Target = (typeof Target)[keyof typeof Target];
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Target = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -126,6 +150,7 @@ export interface Solutions {
 
 export type RuleQuantor = (typeof RuleQuantor)[keyof typeof RuleQuantor];
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const RuleQuantor = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -133,6 +158,7 @@ export const RuleQuantor = {
 
 export type Role = (typeof Role)[keyof typeof Role];
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Role = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -141,6 +167,7 @@ export const Role = {
 
 export type Priority = (typeof Priority)[keyof typeof Priority];
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Priority = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -208,6 +235,7 @@ export interface Office {
 
 export type Grade = (typeof Grade)[keyof typeof Grade];
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Grade = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -336,6 +364,7 @@ export interface ConstantTaskRuleIdDto {
 
 export type Condition = (typeof Condition)[keyof typeof Condition];
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Condition = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -417,7 +446,7 @@ export const getRulesForPartnerWithGivenId = (
 ) => {
   return customInstance<ConstantTaskRule[]>(
     {
-      url: `/Assign/GetRules`,
+      url: `/api/Assign/GetRules`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerIdDto,
@@ -432,7 +461,7 @@ export const getTasksForPartnerWithGivenId = (
 ) => {
   return customInstance<ConstantTaskSize[]>(
     {
-      url: `/Assign/GetTasks`,
+      url: `/api/Assign/GetTasks`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerIdDto,
@@ -445,7 +474,7 @@ export const getTasksForPartners = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<PartnerShortInfoWTask[]>(
-    { url: `/Partner/GetTasks`, method: "get" },
+    { url: `/api/Partner/GetTasks`, method: "get" },
     options,
   );
 };
@@ -454,7 +483,7 @@ export const submitTasksForPartners = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<AssignedTask[]>(
-    { url: `/Assign/SubmitTasks`, method: "get" },
+    { url: `/api/Assign/SubmitTasks`, method: "get" },
     options,
   );
 };
@@ -463,7 +492,7 @@ export const releaseTasksForPartners = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<string>(
-    { url: `/Assign/ReleaseTasks`, method: "get" },
+    { url: `/api/Assign/ReleaseTasks`, method: "get" },
     options,
   );
 };
@@ -472,7 +501,7 @@ export const submitWorkersForToday = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<CourierDto[]>(
-    { url: `/Assign/SubmitWorkers`, method: "get" },
+    { url: `/api/Assign/SubmitWorkers`, method: "get" },
     options,
   );
 };
@@ -481,7 +510,7 @@ export const releaseWorkersForToday = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<string>(
-    { url: `/Assign/ReleaseWorkers`, method: "get" },
+    { url: `/api/Assign/ReleaseWorkers`, method: "get" },
     options,
   );
 };
@@ -490,7 +519,7 @@ export const distributeTaskToCouriersWithMatchingParameters = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<string>(
-    { url: `/Assign/Distribution`, method: "get" },
+    { url: `/api/Assign/Distribution`, method: "get" },
     options,
   );
 };
@@ -501,7 +530,7 @@ export const getTasksForCourierWithGivenId = (
 ) => {
   return customInstance<AssignedTask[]>(
     {
-      url: `/Assign/GetCourierTasks`,
+      url: `/api/Assign/GetCourierTasks`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: userIdDto,
@@ -514,7 +543,7 @@ export const setPolylineForTakenTask = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<string>(
-    { url: `/Assign/SetPolyline`, method: "get" },
+    { url: `/api/Assign/SetPolyline`, method: "get" },
     options,
   );
 };
@@ -523,7 +552,7 @@ export const getTodayTasksForAllCouriers = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<DaysSolution>(
-    { url: `/Assign/GetTodayTasks`, method: "get" },
+    { url: `/api/Assign/GetTodayTasks`, method: "get" },
     options,
   );
 };
@@ -534,7 +563,7 @@ export const getTodayTasksForOneCourier = (
 ) => {
   return customInstance<DaysSolution>(
     {
-      url: `/Assign/GetTodayTasksForCourier`,
+      url: `/api/Assign/GetTodayTasksForCourier`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: userIdDto,
@@ -547,7 +576,7 @@ export const getAllCouriers = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<CourierDto[]>(
-    { url: `/Assign/GetCouriers`, method: "get" },
+    { url: `/api/Assign/GetCouriers`, method: "get" },
     options,
   );
 };
@@ -556,27 +585,27 @@ export const getBusyCouriers = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<CourierDto[]>(
-    { url: `/Assign/GetBusyCouriers`, method: "get" },
+    { url: `/api/Assign/GetBusyCouriers`, method: "get" },
     options,
   );
 };
 
-export const getAssignmentGetMatrix = (
+export const getApiAssignmentGetMatrix = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<unknown[]>(
-    { url: `/Assignment/GetMatrix`, method: "get" },
+    { url: `/api/Assignment/GetMatrix`, method: "get" },
     options,
   );
 };
 
-export const postAuthAuthorize = (
+export const postApiAuthAuthorize = (
   userLoginDto: BodyType<UserLoginDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<UserWithTokenRead>(
     {
-      url: `/Auth/Authorize`,
+      url: `/api/Auth/Authorize`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: userLoginDto,
@@ -585,13 +614,13 @@ export const postAuthAuthorize = (
   );
 };
 
-export const postAuthLogin = (
+export const postApiAuthLogin = (
   userLoginDto: BodyType<UserLoginDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<UserWithTokenRead>(
     {
-      url: `/Auth/Login`,
+      url: `/api/Auth/Login`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: userLoginDto,
@@ -600,24 +629,29 @@ export const postAuthLogin = (
   );
 };
 
-export const getAuthLogout = (
+export const getApiAuthLogout = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<string>(
-    { url: `/Auth/Logout`, method: "get" },
+    { url: `/api/Auth/Logout`, method: "get" },
     options,
   );
 };
 
-export const getAuthMe = (options?: SecondParameter<typeof customInstance>) => {
-  return customInstance<UserRead>({ url: `/Auth/Me`, method: "get" }, options);
+export const getApiAuthMe = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<UserRead>(
+    { url: `/api/Auth/Me`, method: "get" },
+    options,
+  );
 };
 
 export const getConstantTasks = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ConstantTaskSizeRead[]>(
-    { url: `/ConstantTasks/Get`, method: "get" },
+    { url: `/api/ConstantTasks/Get`, method: "get" },
     options,
   );
 };
@@ -628,7 +662,7 @@ export const newConstantTask = (
 ) => {
   return customInstance<ConstantTaskSizeRead>(
     {
-      url: `/ConstantTasks/New`,
+      url: `/api/ConstantTasks/New`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskSizeCreationDto,
@@ -643,7 +677,7 @@ export const updateConstantTask = (
 ) => {
   return customInstance<ConstantTaskSizeRead>(
     {
-      url: `/ConstantTasks/Patch`,
+      url: `/api/ConstantTasks/Patch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskSize,
@@ -658,7 +692,7 @@ export const deleteConstantTask = (
 ) => {
   return customInstance<ConstantTaskSizeRead>(
     {
-      url: `/ConstantTasks/Delete`,
+      url: `/api/ConstantTasks/Delete`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskSizeIdDto,
@@ -671,7 +705,7 @@ export const getConstantTaskRules = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<ConstantTaskRule[]>(
-    { url: `/ConstantTasks/Rules/Get`, method: "get" },
+    { url: `/api/ConstantTasks/Rules/Get`, method: "get" },
     options,
   );
 };
@@ -682,7 +716,7 @@ export const newConstantTaskRule = (
 ) => {
   return customInstance<ConstantTaskRule>(
     {
-      url: `/ConstantTasks/Rule/New`,
+      url: `/api/ConstantTasks/Rule/New`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskRuleCreationDto,
@@ -697,7 +731,7 @@ export const updateConstantTaskRule = (
 ) => {
   return customInstance<ConstantTaskRule>(
     {
-      url: `/ConstantTasks/Rule/Patch`,
+      url: `/api/ConstantTasks/Rule/Patch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskRule,
@@ -712,7 +746,7 @@ export const deleteConstantTaskRule = (
 ) => {
   return customInstance<ConstantTaskRule>(
     {
-      url: `/ConstantTasks/Rule/Delete`,
+      url: `/api/ConstantTasks/Rule/Delete`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: constantTaskRuleIdDto,
@@ -727,7 +761,7 @@ export const checkIfAnyRuleIsSuitable = (
 ) => {
   return customInstance<ConstantTaskRule[]>(
     {
-      url: `/ConstantTasks/Rule/Test`,
+      url: `/api/ConstantTasks/Rule/Test`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: targetDataset,
@@ -742,7 +776,7 @@ export const geocoder = (
 ) => {
   return customInstance<GeocoderCustomResponse>(
     {
-      url: `/Maps/Geocoder`,
+      url: `/api/Maps/Geocoder`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: geocodeRequest,
@@ -757,7 +791,7 @@ export const geosuggest = (
 ) => {
   return customInstance<GeocodeResponse>(
     {
-      url: `/Maps/Geosuggest`,
+      url: `/api/Maps/Geosuggest`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: geocodeRequest,
@@ -772,7 +806,7 @@ export const createNewPartner = (
 ) => {
   return customInstance<PartnerInfoReadDto>(
     {
-      url: `/Partner/New`,
+      url: `/api/Partner/New`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerInfoCreationDto,
@@ -787,7 +821,7 @@ export const patchPartner = (
 ) => {
   return customInstance<PartnerInfoReadDto>(
     {
-      url: `/Partner/Patch`,
+      url: `/api/Partner/Patch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerInfoPatchDto,
@@ -800,7 +834,7 @@ export const getAllPartners = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<PartnerInfoReadDto[]>(
-    { url: `/Partner/GetAll`, method: "get" },
+    { url: `/api/Partner/GetAll`, method: "get" },
     options,
   );
 };
@@ -811,7 +845,7 @@ export const getPartner = (
 ) => {
   return customInstance<PartnerInfoReadDto>(
     {
-      url: `/Partner/Get`,
+      url: `/api/Partner/Get`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerIdDto,
@@ -826,7 +860,7 @@ export const deletePartner = (
 ) => {
   return customInstance<PartnerInfoReadDto>(
     {
-      url: `/Partner/Delete`,
+      url: `/api/Partner/Delete`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerIdDto,
@@ -841,7 +875,7 @@ export const reversePartnerStatus = (
 ) => {
   return customInstance<PartnerInfoReadDto>(
     {
-      url: `/Partner/Switch`,
+      url: `/api/Partner/Switch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerIdDto,
@@ -856,7 +890,7 @@ export const patchPartnerStatistics = (
 ) => {
   return customInstance<PartnerInfoReadDto>(
     {
-      url: `/Partner/Stats/Patch`,
+      url: `/api/Partner/Stats/Patch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerStatsPatchDto,
@@ -871,10 +905,25 @@ export const deletePartnerStatistics = (
 ) => {
   return customInstance<PartnerInfoReadDto>(
     {
-      url: `/Partner/Stats/Delete`,
+      url: `/api/Partner/Stats/Delete`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: partnerIdDto,
+    },
+    options,
+  );
+};
+
+export const postApiReportGetReport = (
+  workerReportIdDto: BodyType<WorkerReportIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<WorkerReportShow>(
+    {
+      url: `/api/Report/GetReport`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: workerReportIdDto,
     },
     options,
   );
@@ -884,22 +933,24 @@ export const getTodaySRoutes = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<Solutions>(
-    { url: `/Route/Today`, method: "get" },
+    { url: `/api/Route/Today`, method: "get" },
     options,
   );
 };
 
-export const getStatus = (options?: SecondParameter<typeof customInstance>) => {
-  return customInstance<void>({ url: `/Status`, method: "get" }, options);
+export const getApiStatus = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>({ url: `/api/Status`, method: "get" }, options);
 };
 
-export const postUserNew = (
+export const postApiUserNew = (
   userCreationDto: BodyType<UserCreationDto>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<User>(
     {
-      url: `/User/New`,
+      url: `/api/User/New`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: userCreationDto,
@@ -912,7 +963,7 @@ export const getAllUsers = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<UserShortRead[]>(
-    { url: `/User/GetShort`, method: "get" },
+    { url: `/api/User/GetShort`, method: "get" },
     options,
   );
 };
@@ -921,7 +972,7 @@ export const getWorkersWithCases = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<UserShortWCaseRead[]>(
-    { url: `/User/Get`, method: "get" },
+    { url: `/api/User/Get`, method: "get" },
     options,
   );
 };
@@ -932,7 +983,7 @@ export const patchUser = (
 ) => {
   return customInstance<UserShortRead>(
     {
-      url: `/User/Patch`,
+      url: `/api/User/Patch`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: userPatchDto,
@@ -947,7 +998,7 @@ export const patchWorkerCase = (
 ) => {
   return customInstance<string>(
     {
-      url: `/User/PatchCase`,
+      url: `/api/User/PatchCase`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: workerCasePatchDto,
@@ -962,7 +1013,7 @@ export const deleteWorker = (
 ) => {
   return customInstance<string>(
     {
-      url: `/User/Delete`,
+      url: `/api/User/Delete`,
       method: "post",
       headers: { "Content-Type": "application/json-patch+json" },
       data: userIdDto,
@@ -971,11 +1022,11 @@ export const deleteWorker = (
   );
 };
 
-export const getOfficeGet = (
+export const getApiOfficeGet = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<Office[]>(
-    { url: `/Office/Get`, method: "get" },
+    { url: `/api/Office/Get`, method: "get" },
     options,
   );
 };
@@ -984,7 +1035,7 @@ export const solveVehicleRoutingProblem = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<void>(
-    { url: `/VehicleRouting/solve`, method: "post" },
+    { url: `/api/VehicleRouting/solve`, method: "post" },
     options,
   );
 };
@@ -1031,20 +1082,20 @@ export type GetAllCouriersResult = NonNullable<
 export type GetBusyCouriersResult = NonNullable<
   Awaited<ReturnType<typeof getBusyCouriers>>
 >;
-export type GetAssignmentGetMatrixResult = NonNullable<
-  Awaited<ReturnType<typeof getAssignmentGetMatrix>>
+export type GetApiAssignmentGetMatrixResult = NonNullable<
+  Awaited<ReturnType<typeof getApiAssignmentGetMatrix>>
 >;
-export type PostAuthAuthorizeResult = NonNullable<
-  Awaited<ReturnType<typeof postAuthAuthorize>>
+export type PostApiAuthAuthorizeResult = NonNullable<
+  Awaited<ReturnType<typeof postApiAuthAuthorize>>
 >;
-export type PostAuthLoginResult = NonNullable<
-  Awaited<ReturnType<typeof postAuthLogin>>
+export type PostApiAuthLoginResult = NonNullable<
+  Awaited<ReturnType<typeof postApiAuthLogin>>
 >;
-export type GetAuthLogoutResult = NonNullable<
-  Awaited<ReturnType<typeof getAuthLogout>>
+export type GetApiAuthLogoutResult = NonNullable<
+  Awaited<ReturnType<typeof getApiAuthLogout>>
 >;
-export type GetAuthMeResult = NonNullable<
-  Awaited<ReturnType<typeof getAuthMe>>
+export type GetApiAuthMeResult = NonNullable<
+  Awaited<ReturnType<typeof getApiAuthMe>>
 >;
 export type GetConstantTasksResult = NonNullable<
   Awaited<ReturnType<typeof getConstantTasks>>
@@ -1101,14 +1152,17 @@ export type PatchPartnerStatisticsResult = NonNullable<
 export type DeletePartnerStatisticsResult = NonNullable<
   Awaited<ReturnType<typeof deletePartnerStatistics>>
 >;
+export type PostApiReportGetReportResult = NonNullable<
+  Awaited<ReturnType<typeof postApiReportGetReport>>
+>;
 export type GetTodaySRoutesResult = NonNullable<
   Awaited<ReturnType<typeof getTodaySRoutes>>
 >;
-export type GetStatusResult = NonNullable<
-  Awaited<ReturnType<typeof getStatus>>
+export type GetApiStatusResult = NonNullable<
+  Awaited<ReturnType<typeof getApiStatus>>
 >;
-export type PostUserNewResult = NonNullable<
-  Awaited<ReturnType<typeof postUserNew>>
+export type PostApiUserNewResult = NonNullable<
+  Awaited<ReturnType<typeof postApiUserNew>>
 >;
 export type GetAllUsersResult = NonNullable<
   Awaited<ReturnType<typeof getAllUsers>>
@@ -1125,8 +1179,8 @@ export type PatchWorkerCaseResult = NonNullable<
 export type DeleteWorkerResult = NonNullable<
   Awaited<ReturnType<typeof deleteWorker>>
 >;
-export type GetOfficeGetResult = NonNullable<
-  Awaited<ReturnType<typeof getOfficeGet>>
+export type GetApiOfficeGetResult = NonNullable<
+  Awaited<ReturnType<typeof getApiOfficeGet>>
 >;
 export type SolveVehicleRoutingProblemResult = NonNullable<
   Awaited<ReturnType<typeof solveVehicleRoutingProblem>>
