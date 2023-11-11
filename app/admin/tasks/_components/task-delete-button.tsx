@@ -50,7 +50,18 @@ const TaskDeleteButton = ({ task }: { task: ConstantTaskSizeRead }) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Отмена</AlertDialogCancel>
-          <AlertDialogAction onClick={() => mutate(task.id)}>
+          <AlertDialogAction
+            onClick={() => {
+              if (task.id > 3) mutate(task.id);
+              else {
+                toast({
+                  variant: "destructive",
+                  title:
+                    "В данный момент невозможно удаление задач по умолчанию",
+                });
+              }
+            }}
+          >
             Удалить
           </AlertDialogAction>
         </AlertDialogFooter>

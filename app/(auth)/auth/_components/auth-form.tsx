@@ -13,27 +13,49 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { postAuthLogin } from "@/shared/api/api.generated";
+import Cookies from "universal-cookie";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  email: z.string().email(),
   password: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
 });
 
 const AuthForm = () => {
+  const cookies = new Cookies(null, { path: "/" });
+  const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
+  const { mutate } = useMutation({
+    mutationFn: async (values: z.infer<typeof formSchema>) =>
+      await postAuthLogin({
+        ...values,
+      }),
+    onSuccess: (data) => {
+      cookies.set("jwt", data.token);
+      toast({
+        title: "Вы успешно авторизовались!",
+        description:
+          "Если возникнут вопросы или проблемы пишите в Телеграм: @barolad",
+      });
+      router.push("/");
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    mutate(values);
   }
   return (
     <Form {...form}>
@@ -41,10 +63,10 @@ const AuthForm = () => {
         <div className="space-y-4">
           <FormField
             control={form.control}
-            name="username"
+            name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Логин</FormLabel>
+                <FormLabel>E-mail</FormLabel>
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>

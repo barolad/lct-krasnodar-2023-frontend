@@ -1,14 +1,23 @@
 "use client";
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
-import { Office, PartnerShortInfoWTask } from "@/shared/api/api.generated";
+import {
+  DaysSolution,
+  Office,
+  PartnerShortInfoWTask,
+  UserRead,
+} from "@/shared/api/api.generated";
 
 const MapProvider = ({
   partners,
   offices,
+  allTasks,
+  user,
 }: {
   partners: PartnerShortInfoWTask[];
   offices: Office[];
+  allTasks: DaysSolution;
+  user: UserRead;
 }) => {
   const Map = useMemo(
     () =>
@@ -22,7 +31,14 @@ const MapProvider = ({
       }),
     [],
   );
-  return <Map partners={partners} offices={offices} />;
+  return (
+    <Map
+      partners={partners}
+      offices={offices}
+      allTasks={allTasks}
+      user={user}
+    />
+  );
 };
 
 export default MapProvider;

@@ -6,13 +6,14 @@
  */
 import { customInstance } from "./custom-instance";
 import type { BodyType } from "./custom-instance";
-export type CheckIfEmailAlreadyExistsParams = {
-  email?: string;
-};
-
 export interface WorkerCasePatchDto {
   case: string;
   id: string;
+}
+
+export interface UserWithTokenRead {
+  token: string;
+  user: UserRead;
 }
 
 export interface UserShortWCaseRead {
@@ -43,12 +44,21 @@ export interface UserRead {
   id?: string;
   lastname: string;
   name: string;
+  role: string;
   surname: string;
 }
 
-export interface UserWithTokenRead {
-  token: string;
-  user: UserRead;
+export interface UserPatchDto {
+  email?: string | null;
+  grade?: Grade;
+  lastname?: string | null;
+  location?: string | null;
+  locationCoordinates?: number[] | null;
+  name?: string | null;
+  password?: string | null;
+  role?: Role;
+  surname?: string | null;
+  userId: string;
 }
 
 export interface UserLoginDto {
@@ -95,7 +105,6 @@ export interface TargetDataset {
 
 export type Target = (typeof Target)[keyof typeof Target];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Target = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -117,7 +126,6 @@ export interface Solutions {
 
 export type RuleQuantor = (typeof RuleQuantor)[keyof typeof RuleQuantor];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const RuleQuantor = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -125,38 +133,24 @@ export const RuleQuantor = {
 
 export type Role = (typeof Role)[keyof typeof Role];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Role = {
   NUMBER_0: 0,
   NUMBER_1: 1,
   NUMBER_2: 2,
 } as const;
 
-export interface UserPatchDto {
-  email?: string | null;
-  grade?: Grade;
-  lastname?: string | null;
-  location?: string | null;
-  locationCoordinates?: number[] | null;
-  name?: string | null;
-  password?: string | null;
-  role?: Role;
-  surname?: string | null;
-  userId: string;
-}
-
-export interface Response {
-  geoObjectCollection: GeoObjectCollection;
-}
-
 export type Priority = (typeof Priority)[keyof typeof Priority];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Priority = {
   NUMBER_0: 0,
   NUMBER_1: 1,
   NUMBER_2: 2,
 } as const;
+
+export interface PolylineDto {
+  polylineExtremities: number[][];
+  shape: string;
+}
 
 export interface Point {
   pos: string;
@@ -214,7 +208,6 @@ export interface Office {
 
 export type Grade = (typeof Grade)[keyof typeof Grade];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Grade = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -262,6 +255,10 @@ export interface GeoObjectCollection {
   metaDataProperty: MetaDataProperty;
 }
 
+export interface Response {
+  geoObjectCollection: GeoObjectCollection;
+}
+
 export interface Envelope {
   lowerCorner: string;
   upperCorner: string;
@@ -270,6 +267,34 @@ export interface Envelope {
 export interface Endpnt {
   coordinates: number[];
   routeToEndpoint: string;
+}
+
+export interface DayTaskSolution {
+  aproximateDayEndTime: string;
+  tasks: AssignedTaskShort[];
+  worker: User;
+}
+
+export interface DayTasks {
+  polylineExtremities: number[][];
+  tasks: DayTaskSolution[];
+}
+
+export interface DaysSolution {
+  dayTasksList: DayTasks[];
+}
+
+export interface CourierDto {
+  date: string;
+  grade: Grade;
+  id?: number;
+  locationCoordinates: number[];
+  modifiedAt: string;
+  status: string;
+  taskId?: number | null;
+  taskIds?: number[] | null;
+  workerId: string;
+  workTime: number;
 }
 
 export interface ConstantTaskSizeRead {
@@ -311,7 +336,6 @@ export interface ConstantTaskRuleIdDto {
 
 export type Condition = (typeof Condition)[keyof typeof Condition];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Condition = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -345,6 +369,38 @@ export interface ConstantTaskRule {
 
 export interface BoundedBy {
   envelope: Envelope;
+}
+
+export interface AssignedTaskShort {
+  addressTo: string;
+  approximateArrivingTime: string;
+  grades: Grade[];
+  locationCoordinatesFrom: number[];
+  locationCoordinatesTo: number[];
+  polyline: PolylineDto;
+  priority: Priority;
+  taskName: string;
+  taskTime: number;
+  travelTime: number;
+}
+
+export interface AssignedTask {
+  addressFrom?: string | null;
+  addressTo: string;
+  courierId?: string | null;
+  createdAt: string;
+  date: string;
+  grades: Grade[];
+  id?: number;
+  isDone: boolean;
+  locationCoordinatesFrom?: number[] | null;
+  locationCoordinatesTo: number[];
+  partnerId: number;
+  polyline?: string | null;
+  priority: Priority;
+  size: number;
+  taskId: number;
+  travelTime?: number | null;
 }
 
 // eslint-disable-next-line
@@ -394,11 +450,137 @@ export const getTasksForPartners = (
   );
 };
 
+export const submitTasksForPartners = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<AssignedTask[]>(
+    { url: `/Assign/SubmitTasks`, method: "get" },
+    options,
+  );
+};
+
+export const releaseTasksForPartners = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<string>(
+    { url: `/Assign/ReleaseTasks`, method: "get" },
+    options,
+  );
+};
+
+export const submitWorkersForToday = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<CourierDto[]>(
+    { url: `/Assign/SubmitWorkers`, method: "get" },
+    options,
+  );
+};
+
+export const releaseWorkersForToday = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<string>(
+    { url: `/Assign/ReleaseWorkers`, method: "get" },
+    options,
+  );
+};
+
+export const distributeTaskToCouriersWithMatchingParameters = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<string>(
+    { url: `/Assign/Distribution`, method: "get" },
+    options,
+  );
+};
+
+export const getTasksForCourierWithGivenId = (
+  userIdDto: BodyType<UserIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<AssignedTask[]>(
+    {
+      url: `/Assign/GetCourierTasks`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: userIdDto,
+    },
+    options,
+  );
+};
+
+export const setPolylineForTakenTask = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<string>(
+    { url: `/Assign/SetPolyline`, method: "get" },
+    options,
+  );
+};
+
+export const getTodayTasksForAllCouriers = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<DaysSolution>(
+    { url: `/Assign/GetTodayTasks`, method: "get" },
+    options,
+  );
+};
+
+export const getTodayTasksForOneCourier = (
+  userIdDto: BodyType<UserIdDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<DaysSolution>(
+    {
+      url: `/Assign/GetTodayTasksForCourier`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: userIdDto,
+    },
+    options,
+  );
+};
+
+export const getAllCouriers = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<CourierDto[]>(
+    { url: `/Assign/GetCouriers`, method: "get" },
+    options,
+  );
+};
+
+export const getBusyCouriers = (
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<CourierDto[]>(
+    { url: `/Assign/GetBusyCouriers`, method: "get" },
+    options,
+  );
+};
+
 export const getAssignmentGetMatrix = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<unknown[]>(
     { url: `/Assignment/GetMatrix`, method: "get" },
+    options,
+  );
+};
+
+export const postAuthAuthorize = (
+  userLoginDto: BodyType<UserLoginDto>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<UserWithTokenRead>(
+    {
+      url: `/Auth/Authorize`,
+      method: "post",
+      headers: { "Content-Type": "application/json-patch+json" },
+      data: userLoginDto,
+    },
     options,
   );
 };
@@ -418,15 +600,6 @@ export const postAuthLogin = (
   );
 };
 
-export const getAuthAuthorize = (
-  options?: SecondParameter<typeof customInstance>,
-) => {
-  return customInstance<UserRead>(
-    { url: `/Auth/Authorize`, method: "get" },
-    options,
-  );
-};
-
 export const getAuthLogout = (
   options?: SecondParameter<typeof customInstance>,
 ) => {
@@ -436,14 +609,8 @@ export const getAuthLogout = (
   );
 };
 
-export const checkIfEmailAlreadyExists = (
-  params?: CheckIfEmailAlreadyExistsParams,
-  options?: SecondParameter<typeof customInstance>,
-) => {
-  return customInstance<string>(
-    { url: `/Auth/сheck`, method: "get", params },
-    options,
-  );
+export const getAuthMe = (options?: SecondParameter<typeof customInstance>) => {
+  return customInstance<UserRead>({ url: `/Auth/Me`, method: "get" }, options);
 };
 
 export const getConstantTasks = (
@@ -831,20 +998,53 @@ export type GetTasksForPartnerWithGivenIdResult = NonNullable<
 export type GetTasksForPartnersResult = NonNullable<
   Awaited<ReturnType<typeof getTasksForPartners>>
 >;
+export type SubmitTasksForPartnersResult = NonNullable<
+  Awaited<ReturnType<typeof submitTasksForPartners>>
+>;
+export type ReleaseTasksForPartnersResult = NonNullable<
+  Awaited<ReturnType<typeof releaseTasksForPartners>>
+>;
+export type SubmitWorkersForTodayResult = NonNullable<
+  Awaited<ReturnType<typeof submitWorkersForToday>>
+>;
+export type ReleaseWorkersForTodayResult = NonNullable<
+  Awaited<ReturnType<typeof releaseWorkersForToday>>
+>;
+export type DistributeTaskToCouriersWithMatchingParametersResult = NonNullable<
+  Awaited<ReturnType<typeof distributeTaskToCouriersWithMatchingParameters>>
+>;
+export type GetTasksForCourierWithGivenIdResult = NonNullable<
+  Awaited<ReturnType<typeof getTasksForCourierWithGivenId>>
+>;
+export type SetPolylineForTakenTaskResult = NonNullable<
+  Awaited<ReturnType<typeof setPolylineForTakenTask>>
+>;
+export type GetTodayTasksForAllCouriersResult = NonNullable<
+  Awaited<ReturnType<typeof getTodayTasksForAllCouriers>>
+>;
+export type GetTodayTasksForOneCourierResult = NonNullable<
+  Awaited<ReturnType<typeof getTodayTasksForOneCourier>>
+>;
+export type GetAllCouriersResult = NonNullable<
+  Awaited<ReturnType<typeof getAllCouriers>>
+>;
+export type GetBusyCouriersResult = NonNullable<
+  Awaited<ReturnType<typeof getBusyCouriers>>
+>;
 export type GetAssignmentGetMatrixResult = NonNullable<
   Awaited<ReturnType<typeof getAssignmentGetMatrix>>
+>;
+export type PostAuthAuthorizeResult = NonNullable<
+  Awaited<ReturnType<typeof postAuthAuthorize>>
 >;
 export type PostAuthLoginResult = NonNullable<
   Awaited<ReturnType<typeof postAuthLogin>>
 >;
-export type GetAuthAuthorizeResult = NonNullable<
-  Awaited<ReturnType<typeof getAuthAuthorize>>
->;
 export type GetAuthLogoutResult = NonNullable<
   Awaited<ReturnType<typeof getAuthLogout>>
 >;
-export type CheckIfEmailAlreadyExistsResult = NonNullable<
-  Awaited<ReturnType<typeof checkIfEmailAlreadyExists>>
+export type GetAuthMeResult = NonNullable<
+  Awaited<ReturnType<typeof getAuthMe>>
 >;
 export type GetConstantTasksResult = NonNullable<
   Awaited<ReturnType<typeof getConstantTasks>>

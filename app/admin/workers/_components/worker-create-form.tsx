@@ -43,7 +43,7 @@ const WorkerCreateForm = () => {
     },
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async (values: z.infer<typeof workerFormSchema>) =>
       postUserNew({
         email: values.email,
@@ -175,7 +175,7 @@ const WorkerCreateForm = () => {
             );
           }}
         />
-        <Button type="submit" className="w-full" isLoading={isPending}>
+        <Button type="submit" className="w-full">
           Создать
         </Button>
       </form>

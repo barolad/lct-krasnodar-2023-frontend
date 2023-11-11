@@ -7,8 +7,8 @@ import { FinishMarker, StartMarker } from "@/components/markers";
 import { PartnerInfoReadDto } from "@/shared/api/api.generated";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
 import PartnerDialog from "@/app/admin/partners/_components/partner-dialog";
+import YandexTileLayer from "@/components/yandex-tile-layer";
 
 const PopupContainer = ({ partner }: { partner: PartnerInfoReadDto }) => {
   return (
@@ -40,11 +40,7 @@ const MapWithPartners = ({ partners }: { partners: PartnerInfoReadDto[] }) => {
         center={partners[0].locationCoordinates as LatLngExpression}
         crs={CRS.EPSG3395}
       >
-        <TileLayer
-          subdomains={["01", "02", "03", "04"]}
-          url="https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&scale=1&lang=ru_RU"
-          attribution='©<a http="https://yandex.ru" target="_blank"> Yandex</a>'
-        />
+        <YandexTileLayer />
         {partners.map((partner) => (
           <>
             {partner.isActive ? (
@@ -59,10 +55,7 @@ const MapWithPartners = ({ partners }: { partners: PartnerInfoReadDto[] }) => {
                 position={partner.locationCoordinates as LatLngExpression}
                 key={partner.id}
               >
-                <Popup>
-                  {partner.address}
-                  <PopupContainer partner={partner} />
-                </Popup>
+                <PopupContainer partner={partner} />
               </FinishMarker>
             )}
           </>

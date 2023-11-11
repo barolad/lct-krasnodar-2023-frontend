@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import PartnerCreateForm from "@/app/admin/partners/_components/partner-create-form";
 import TaskCreateForm from "@/app/admin/tasks/_components/task-create-form";
 
 const WorkerCreateButton = () => {

@@ -19,7 +19,6 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <head />
       <ClientProviders>
         <body
           className={cn(

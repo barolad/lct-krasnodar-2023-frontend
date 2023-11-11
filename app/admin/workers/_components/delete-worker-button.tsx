@@ -12,7 +12,7 @@ const DeleteWorkerButton = ({ id }: { id: string }) => {
   const { toast } = useToast();
   const router = useRouter();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async (id: string) => await deleteWorker({ userId: id }),
     onSuccess: () => {
       toast({ title: "Пользователь удалён" });

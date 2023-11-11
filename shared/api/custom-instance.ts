@@ -93,6 +93,7 @@ export const customInstance = async <T>(
   try {
     const token = await getJWTCookie();
     const cookieHeaders = !!token ? { Cookies: "jwt=" + token } : null;
+    console.log(cookieHeaders);
     const response = await fetch(
       `${baseURL}${url}` + new URLSearchParams(params),
       {

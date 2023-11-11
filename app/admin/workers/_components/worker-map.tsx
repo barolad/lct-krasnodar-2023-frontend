@@ -2,19 +2,16 @@
 
 import "leaflet/dist/leaflet.css";
 import "@/styles/leaflet.css";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer } from "react-leaflet";
 import { CRS, LatLngExpression } from "leaflet";
 import { StartMarker } from "@/components/markers";
+import YandexTileLayer from "@/components/yandex-tile-layer";
 
 const WorkerMap = ({ coordinates }: { coordinates: LatLngExpression }) => {
   return (
     <div className="h-40 w-full overflow-hidden rounded-md">
       <MapContainer center={coordinates} crs={CRS.EPSG3395} zoom={15}>
-        <TileLayer
-          subdomains={["01", "02", "03", "04"]}
-          url="https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&scale=1&lang=ru_RU"
-          attribution='©<a http="https://yandex.ru" target="_blank"> Yandex</a>'
-        />
+        <YandexTileLayer />
         <StartMarker position={coordinates} />
       </MapContainer>
     </div>

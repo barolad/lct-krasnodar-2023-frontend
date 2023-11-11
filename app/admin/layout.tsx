@@ -2,8 +2,12 @@ import DashboardNav from "@/app/admin/_components/dashboard-nav";
 import { AsideConfig } from "@/configs/aside.config";
 import Image from "next/image";
 import Link from "next/link";
+import { getAuthMe } from "@/shared/api/api.generated";
+import { notFound } from "next/navigation";
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
+  const user = await getAuthMe();
+  if (!user || user.role != "Менеджер") return notFound();
   return (
     <div className="flex min-h-screen flex-col space-y-6">
       <header className="sticky top-0 z-40 border-b bg-background ">
