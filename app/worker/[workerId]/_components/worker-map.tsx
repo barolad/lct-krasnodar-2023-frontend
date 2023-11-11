@@ -28,7 +28,7 @@ const WorkerMap = ({ task }: { task: AssignedTaskShort }) => {
         setCurrentLocation([latitude, longitude]);
       },
       (error) => {
-        console.error(error);
+        console.error(error + " ");
       },
     );
   }, []);
