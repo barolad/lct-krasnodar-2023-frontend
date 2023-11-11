@@ -22,7 +22,6 @@ export const catchErrorCodes = (result: ApiResult): void => {
       description: "You need to be logged in to do that.",
       variant: "destructive",
     });
-    throw new ApiError(result, error);
   }
 
   if (!result.ok) {
@@ -44,10 +43,6 @@ export const catchErrorCodes = (result: ApiResult): void => {
       });
     }
     console.log(errorStatusText);
-    throw new ApiError(
-      result,
-      `Generic Error: status: ${errorStatus}; status text: ${errorStatusText}; body: ${errorBody}`,
-    );
   }
 };
 

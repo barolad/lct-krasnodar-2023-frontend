@@ -9,11 +9,12 @@ import { notFound, redirect } from "next/navigation";
 
 const HomePage = async () => {
   const user = await getAuthMe({ cache: "no-cache" });
-  const partners = await getTasksForPartners({ cache: "no-cache" });
-  const offices = await getOfficeGet({ cache: "no-cache" });
-  const allTasks = await getTodayTasksForAllCouriers({ cache: "no-cache" });
+
   console.log(user);
   if (user.role === "Менеджер") {
+    const partners = await getTasksForPartners({ cache: "no-cache" });
+    const offices = await getOfficeGet({ cache: "no-cache" });
+    const allTasks = await getTodayTasksForAllCouriers({ cache: "no-cache" });
     return (
       <div className="h-screen w-full">
         <MapProvider
