@@ -31,9 +31,9 @@ import { startTransition } from "react";
 export const partnerEditFormSchema = z.object({
   whenPointConnected: z.string(),
   areCardsAndMaterialsDelivered: z.string(),
-  daysSinceLastCardIssue: z.number(),
-  numberOfApprovedApplications: z.number(),
-  numberOfGivenCards: z.number(),
+  daysSinceLastCardIssue: z.string(),
+  numberOfApprovedApplications: z.string(),
+  numberOfGivenCards: z.string(),
 });
 
 const PartnerEditForm = ({ partner }: { partner: PartnerInfoReadDto }) => {
@@ -43,8 +43,14 @@ const PartnerEditForm = ({ partner }: { partner: PartnerInfoReadDto }) => {
   const { mutate } = useMutation({
     mutationFn: async (values: z.infer<typeof partnerEditFormSchema>) =>
       patchPartnerStatistics({
+        areCardsAndMaterialsDelivered: values.areCardsAndMaterialsDelivered,
+        daysSinceLastCardIssue: Number(values.daysSinceLastCardIssue),
         id: partner.id,
-        ...values,
+        numberOfApprovedApplications: Number(
+          values.numberOfApprovedApplications,
+        ),
+        numberOfGivenCards: Number(values.numberOfGivenCards),
+        whenPointConnected: values.whenPointConnected,
       }),
     onSuccess: () => {
       toast({ title: "Партнёр обновлён" });
@@ -59,9 +65,10 @@ const PartnerEditForm = ({ partner }: { partner: PartnerInfoReadDto }) => {
     defaultValues: {
       whenPointConnected: partner.whenPointConnected,
       areCardsAndMaterialsDelivered: partner.areCardsAndMaterialsDelivered,
-      daysSinceLastCardIssue: partner.daysSinceLastCardIssue,
-      numberOfApprovedApplications: partner.numberOfApprovedApplications,
-      numberOfGivenCards: partner.numberOfGivenCards,
+      daysSinceLastCardIssue: partner.daysSinceLastCardIssue.toString(),
+      numberOfApprovedApplications:
+        partner.numberOfApprovedApplications.toString(),
+      numberOfGivenCards: partner.numberOfGivenCards.toString(),
     },
   });
   function onSubmit(values: z.infer<typeof partnerEditFormSchema>) {

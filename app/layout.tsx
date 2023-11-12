@@ -5,9 +5,10 @@ import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import ClientProviders from "@/components/providers/client-providers";
+import { Analytics } from "@vercel/analytics/react";
 
 const fontSans = FontSans({
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic"],
   variable: "--font-sans",
 });
 
@@ -27,6 +28,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           )}
         >
           {children}
+          <Analytics />
           <Toaster />
         </body>
       </ClientProviders>

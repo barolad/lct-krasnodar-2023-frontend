@@ -12,7 +12,15 @@ export const columns: ColumnDef<UserShortWCaseRead>[] = [
   {
     accessorKey: "case",
     header: "Статус",
-    cell: ({ row }) => <Badge variant="outline">{row.getValue("case")}</Badge>,
+    cell: ({ row }) => (
+      <Badge
+        variant={
+          row.getValue("case") === "Доступен" ? "outline" : "destructive"
+        }
+      >
+        {row.getValue("case")}
+      </Badge>
+    ),
   },
   {
     accessorKey: "surname",

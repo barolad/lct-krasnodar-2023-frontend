@@ -48,6 +48,9 @@ const PartnerCreateForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof partnerCreateFormSchema>) {
+    if (values.location.location === " ") {
+      return;
+    }
     mutate(values);
   }
   return (

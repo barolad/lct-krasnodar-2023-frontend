@@ -38,8 +38,10 @@ const ChooseOffice = ({
   }, [addresses]);
 
   const debounced = useDebouncedCallback(async (inputValue: string) => {
-    const response = await geocoder({ address: inputValue });
-    setAddresses(response);
+    if (inputValue.length) {
+      const response = await geocoder({ address: inputValue });
+      setAddresses(response);
+    } else setAddresses(null);
   }, 1500);
 
   const onChangeInputHandler = (event: ChangeEvent<HTMLInputElement>) => {

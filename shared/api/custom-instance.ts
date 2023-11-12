@@ -2,6 +2,7 @@ import { getJWTCookie } from "@/lib/server-utils";
 import { ApiResult } from "@/shared/api/ApiResult";
 import { toast } from "@/components/ui/use-toast";
 import { ApiError } from "@/shared/api/ApiError";
+import { isServer } from "@tanstack/query-core";
 
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const catchErrorCodes = (result: ApiResult): void => {
@@ -18,8 +19,8 @@ export const catchErrorCodes = (result: ApiResult): void => {
   const error = errors[result.status];
   if (error) {
     toast({
-      title: result.body,
-      description: "You need to be logged in to do that.",
+      title: "Ошибка",
+      description: result.body,
       variant: "destructive",
     });
   }
@@ -43,6 +44,13 @@ export const catchErrorCodes = (result: ApiResult): void => {
       });
     }
     console.log(errorStatusText);
+
+    if (!isServer) {
+      throw new ApiError(
+        result,
+        `Generic Error: status: ${errorStatus}; status text: ${errorStatusText}; body: ${errorBody}`,
+      );
+    }
   }
 };
 

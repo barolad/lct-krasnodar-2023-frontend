@@ -37,56 +37,60 @@ const WorkerReportDialog = ({ worker }: { worker: UserShortWCaseRead }) => {
           Отчёт {worker.surname} {worker.name} {worker.lastname}
         </DialogTitle>
       </DialogHeader>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="flex flex-col space-y-2">
-          <CustomRow
-            title="Задач выполнено всего"
-            value={workerReport.data?.completedTasks.toString()}
-          />
-          <CustomRow
-            title="Выездов на точку для стимулирования выдач"
-            value={workerReport.data?.completedTasksOfEachType[0].toString()}
-          />
-          <CustomRow
-            title="Обучение агента"
-            value={workerReport.data?.completedTasksOfEachType[1].toString()}
-          />
-          <CustomRow
-            title="Доставка карт и материалов"
-            value={workerReport.data?.completedTasksOfEachType[2].toString()}
-          />
-          <CustomRow
-            title="Километров пройдено всего"
-            value={workerReport.data?.kilometersPassed.toString()}
-          />
-          <CustomRow
-            title="Время потрачено всего"
-            value={workerReport.data?.timeSpentOnTasks.toString()}
-          />
+      {workerReport.isError || !workerReport.data ? (
+        "Ошибка"
+      ) : (
+        <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col space-y-2">
+            <CustomRow
+              title="Задач выполнено всего"
+              value={workerReport.data?.completedTasks.toString()}
+            />
+            <CustomRow
+              title="Выездов на точку для стимулирования выдач"
+              value={workerReport.data?.completedTasksOfEachType[0].toString()}
+            />
+            <CustomRow
+              title="Обучение агента"
+              value={workerReport.data?.completedTasksOfEachType[1].toString()}
+            />
+            <CustomRow
+              title="Доставка карт и материалов"
+              value={workerReport.data?.completedTasksOfEachType[2].toString()}
+            />
+            <CustomRow
+              title="Километров пройдено всего"
+              value={workerReport.data?.kilometersPassed.toString()}
+            />
+            <CustomRow
+              title="Время потрачено всего"
+              value={workerReport.data?.timeSpentOnTasks.toString()}
+            />
+          </div>
+          <div className="flex flex-col space-y-2">
+            <CustomRow
+              title="Задач уровня Сениор"
+              value={workerReport.data?.completedTasksOfEachGrade[0].toString()}
+            />
+            <CustomRow
+              title="Задач уровня Мидл"
+              value={workerReport.data?.completedTasksOfEachGrade[1].toString()}
+            />
+            <CustomRow
+              title="Задач уровня Джун"
+              value={workerReport.data?.completedTasksOfEachGrade[2].toString()}
+            />
+            <CustomRow
+              title="Самая популярная задача"
+              value={workerReport.data?.mostPopularTask}
+            />
+            <CustomRow
+              title="Дни без отдыха"
+              value={workerReport.data?.completedTasksOfEachGrade[0].toString()}
+            />
+          </div>
         </div>
-        <div className="flex flex-col space-y-2">
-          <CustomRow
-            title="Задач уровня Сениор"
-            value={workerReport.data?.completedTasksOfEachGrade[0].toString()}
-          />
-          <CustomRow
-            title="Задач уровня Мидл"
-            value={workerReport.data?.completedTasksOfEachGrade[1].toString()}
-          />
-          <CustomRow
-            title="Задач уровня Джун"
-            value={workerReport.data?.completedTasksOfEachGrade[2].toString()}
-          />
-          <CustomRow
-            title="Самая популярная задача"
-            value={workerReport.data?.mostPopularTask}
-          />
-          <CustomRow
-            title="Дни без отдыха"
-            value={workerReport.data?.completedTasksOfEachGrade[0].toString()}
-          />
-        </div>
-      </div>
+      )}
     </DialogContent>
   );
 };
